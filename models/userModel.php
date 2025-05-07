@@ -40,7 +40,6 @@ function findUserByEmail($email) // a function to find a user by email
     
 }
 
-
 function findUserByID($userID) // a function to find a user by ID
 {
     global $pdo;

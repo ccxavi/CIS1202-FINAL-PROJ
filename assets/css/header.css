@@ -23,6 +23,8 @@ header {
   align-items: center;
 }
 
+/* auth here applies if user does not have an account yet */
+
 .auth,
 .links div {
   border: 2px solid black;
@@ -42,4 +44,3 @@ header {
   text-decoration: none;
   color: black;
 }
-
