@@ -1,3 +1,27 @@
+<?php
+session_start();
+
+require_once __DIR__ . '/config/databaseConnection.php';
+require_once __DIR__ . '/controllers/userAuthHandler.php';
+
+if(isAuthenticated()){
+    $userID = $_SESSION['userID'];
+    $user = findUserByID($userID);
+
+    
+    $profilePic = $user['profile_pic'] ?? './assets/photo/Profile_Pictures/default.jpg'; // fallback if null
+}
+
+
+if (isset($_POST['logout'])) {
+    handleSignOut();
+}
+
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,22 +37,52 @@
     <header>
         <div class="navbar">
             <div class="logo">
-                <img src="" alt="logo">
             </div>
             <div class="links">
                 <a href="#"><div class="home">Home</div></a>
                 <a href="./views/explore.php"><div class="explore">Explore</div></a>
                 <a href="./views/guide.php"><div class="guide">Guide</div></a>
-                <a href="./views/collection.php"><div class="collection">Collection</div></a>
-                <a href="./views/community.php"><div class="community">Community</div></a>
+                <?php
+                        if (isAuthenticated()){
+                            echo "
+                                <a href='./views/collection.php'><div class='collection'>Collection</div></a>
+                                <a href='./views/community.php'><div class='community'>Community</div></a>";
+                        } 
+
+                    ?>
             </div>
         </div>
-        <div class="auth">
-            <a href="#">Login/Register</a>
-            <img src="./assets/img/test.png" alt="pfp"></i>
+        <div class="auth" id="auth">
+            <?php
+                if (isAuthenticated()){
+                    echo "<img src='" . htmlspecialchars($profilePic) . "' height='40px' weight'auto'>";
+                } else {
+                    echo "<a href='./views/loginRegister.php'>Login/Register</a>";
+                }
+
+            ?>
         </div>
     </header>
     <main>
+
+        <!-- Right Side Bar for User Account Settings -->
+        <div class="userProfileBar" id="userProfileBar">
+            <form id="uploadForm" action="./controllers/upload.php" method="POST" enctype="multipart/form-data">
+                <label for="profilePic">Upload Profile Picture:</label><br>
+                <input type="file" name="profilePic" id="profilePic" accept="image/*" required><br><br>
+                <button type="submit">Upload</button>
+            </form>
+            
+            <?php
+            
+                if (isAuthenticated()){
+                    echo "
+                        <form method='post'><button type='submit' name='logout'>Log Out</button></form>";
+                } 
+            ?>
+        </div>
+
+
         <div class="container">
             <h1>Research Without the Doubt.</h1>
             <div class="search">
@@ -44,5 +98,8 @@
         <p>2025 All Rights Reserved</p>
 
     </footer>
+
+    <script src="./assets/js/userProfile.js"></script>
+
 </body>
 </html>
