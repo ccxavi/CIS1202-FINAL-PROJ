@@ -102,7 +102,8 @@ if (isset($_POST['logout'])) {
             <div class="trending-section">
                 <h5 class="trending-heading">Trending Topics, All Verified.</h5>
                 <div class="trending-layout">
-                    <div class="trending-item">
+                    <div class="trending-item-container">
+                        <div class="trending-item">
                         <button><i class="bi bi-eye"></i></button>
                         <div class="title">The Impact of Climate Change on Marine Biodiversity</div>
                     </div>
@@ -138,10 +139,12 @@ if (isset($_POST['logout'])) {
                         <button><i class="bi bi-eye"></i></button>
                         <div class="title">Language Models and Their Role in Education Reform</div>
                     </div>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
+    
     <footer>
         <div class="footer-content">
             <p>© 2025 <strong><em>Vero.</em></strong> All rights reserved.</p>
