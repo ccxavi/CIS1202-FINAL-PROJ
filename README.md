@@ -25,7 +25,7 @@ Follow the steps below to set up the database for this project:
 
 ---
 
-### 3. Create Database Tables
+### 3. Create Database Table
 
 1. On the top bar of phpMyAdmin, click on the **SQL** tab.
 2. In the SQL query box, paste the following code:
@@ -67,29 +67,3 @@ CREATE TABLE reactions (
     FOREIGN KEY (post_id) REFERENCES posts(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
-
-CREATE TABLE articles (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    article_link VARCHAR(255) NOT NULL,
-    preview_image_link VARCHAR(255) NOT NULL,
-    description TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-```
-
----
-
-### 4. Verify Setup
-
-After running the SQL commands, you should see the following tables in your database:
-- users
-- posts
-- comments
-- reactions
-- articles
-
-Each table should be created with its respective columns and relationships. If you encounter any errors, please check:
-1. That the MySQL server is running
-2. That you're connected to the correct database
-3. That you have the necessary permissions

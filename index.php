@@ -12,16 +12,11 @@ if(isAuthenticated()){
     $profilePic = $user['profile_pic'] ?? './assets/photo/Profile_Pictures/default.jpg'; // fallback if null
 }
 
-
 if (isset($_POST['logout'])) {
     handleSignOut();
 }
 
 ?>
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">

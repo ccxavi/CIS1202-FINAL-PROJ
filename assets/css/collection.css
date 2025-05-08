@@ -1,0 +1,22 @@
+.collection-container{
+  width: 70%;
+  height: 100%;
+  border: 1px solid black;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.collection-project{
+  width: 25%;
+  height: 100%;
+  border: 1px solid black;
+
+}
+
+.collection-sources{
+  width: 73%;
+  height: 100%;
+  border: 1px solid black;
+}
+

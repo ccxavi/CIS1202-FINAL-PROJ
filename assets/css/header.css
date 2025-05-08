@@ -25,12 +25,12 @@ header {
 
 /* auth here applies if user does not have an account yet */
 
-.auth,
+/* .auth,
 .links div {
   border: 2px solid black;
   border-radius: 24px;
   padding: 8px 12px;
-}
+} */
 
 .auth img {
   border: 2px solid black;
@@ -43,4 +43,7 @@ header {
 .links a {
   text-decoration: none;
   color: black;
+  border: 2px solid black;
+  border-radius: 24px;
+  padding: 8px 12px;
 }
