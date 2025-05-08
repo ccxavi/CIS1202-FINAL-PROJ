@@ -10,6 +10,48 @@ http://localhost/CIS1202-FINAL-PROJ/api/articles.php
 ## Authentication
 Currently, the API does not require authentication.
 
+## JSON Structure
+
+### Article Object
+```json
+{
+    "id": "integer (auto-increment)",
+    "article_link": "string (URL)",
+    "preview_image_link": "string (URL)",
+    "description": "string (text)",
+    "created_at": "timestamp (YYYY-MM-DD HH:MM:SS)",
+    "updated_at": "timestamp (YYYY-MM-DD HH:MM:SS)"
+}
+```
+
+### Field Descriptions
+| Field | Type | Description | Required | Example |
+|-------|------|-------------|----------|---------|
+| id | Integer | Unique identifier | No (auto-generated) | 1 |
+| article_link | String | URL to the full article | Yes | "https://example.com/article" |
+| preview_image_link | String | URL to the article's preview image | Yes | "https://example.com/image.jpg" |
+| description | String | Short description of the article | Yes | "This is an article about..." |
+| created_at | Timestamp | When the article was created | No (auto-generated) | "2024-05-08 23:53:17" |
+| updated_at | Timestamp | When the article was last updated | No (auto-generated) | "2024-05-08 23:53:17" |
+
+### Response Structure
+All API responses follow this format:
+```json
+{
+    "status": "string (success/error)",
+    "data": "object/array (for GET requests)",
+    "message": "string (for POST/PUT/DELETE requests)"
+}
+```
+
+### Error Response Structure
+```json
+{
+    "status": "error",
+    "message": "string (error description)"
+}
+```
+
 ## Endpoints
 
 ### 1. Get All Articles
