@@ -1,0 +1,35 @@
+footer {
+  margin: 0;
+  padding: 1rem;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-content p {
+  margin: 0;
+}
+
+.socials {
+  display: flex;
+  gap: 10px;
+}
+
+.socials a div {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  color: var(--white);
+  background-color: var(--azure-blue);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.socials a div:hover {
+  background-color: var(--text-color);
+}

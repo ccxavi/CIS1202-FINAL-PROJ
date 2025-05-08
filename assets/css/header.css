@@ -12,28 +12,46 @@ header {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
 }
 
-.navbar,
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 3rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.logo img {
+  width: 45px;
+  height: 45px;
+  display: block;
+}
+
+.logo h2 {
+  margin: 0;
+  line-height: 1;
+}
+
 .links,
 .auth {
   display: flex;
-  flex-direction: row;
-  gap: 12px;
+  justify-content: center;
   align-items: center;
+  gap: 12px;
 }
 
 /* auth here applies if user does not have an account yet */
 
-/* .auth,
-.links div {
-  border: 2px solid black;
-  border-radius: 24px;
-  padding: 8px 12px;
-} */
-
 .auth img {
-  border: 2px solid black;
+  border: 0px;
   border-radius: 50%;
   width: 45px;
   height: 45px;
