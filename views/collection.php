@@ -47,7 +47,9 @@ if (isset($_POST['logout'])) {
 <header>
         <div class="navbar">
             <div class="logo">
-                <img src="" alt="logo">
+                <img src="../assets/img/logo.png" alt="logo">
+                <h2>Vero</h2>
+
             </div>
             <div class="links">
                 <a href="#"><div class="home">Home</div></a>

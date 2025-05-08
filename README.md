@@ -21,7 +21,7 @@ Follow the steps below to set up the database for this project:
 2. In the address bar, type `localhost` and press **Enter**.
 3. Click on **phpMyAdmin** to open the MySQL admin interface.
 4. In the left sidebar, click **New** to create a new database.
-5. Enter the name `verifindDB` database name and click **Create**.
+5. Enter the name `veroDB` database name and click **Create**.
 
 ---
 
@@ -37,7 +37,7 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL,             
     password VARCHAR(255) NOT NULL,          
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
-    profile_picture VARCHAR(255) DEFAULT NULL
+    profile_pic VARCHAR(255) DEFAULT NULL
 );
 
 CREATE TABLE posts (
