@@ -15,9 +15,7 @@
   font-family: var(--poppins);
 }
 
-html {
-  scrollbar-gutter: stable;
-}
+
 
 body {
   display: flex;
