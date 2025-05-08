@@ -75,7 +75,7 @@ function handleSignOut(){
     session_unset(); // Unset all session variables
     session_destroy(); // Destroy the session
 
-    header("Location: /VeriFind/index.php");
+    header("Location: ./index.php");
     exit();
 
 }
@@ -88,7 +88,7 @@ function isAuthenticated()
 function redirectIfAuthenticated()
 {
     if (isAuthenticated()) {
-        header("Location: /VeriFind/index.php");
+        header("Location: ./index.php");
         exit();
     }
 }
