@@ -11,24 +11,29 @@ root {
   font-family: var(--poppins);
 }
 
+
 html {
   scrollbar-gutter: stable;
 }
 
 body {
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
   padding: 1rem;
+  justify-content: space-between;
 }
 
 main {
+  border: 1px solid black;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
   padding: 2rem;
+  overflow-y: hidden;
 }
 .userProfile > img{
   border-radius: 50%;

@@ -2,9 +2,9 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "verifindDB";
+$dbname = "veroDB";
 
-try {
+try {   
     $dsn = "mysql:host=$servername;dbname=$dbname;charset=utf8mb4";
     $pdo = new PDO($dsn, $username, $password);
 
