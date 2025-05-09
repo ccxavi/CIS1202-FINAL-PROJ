@@ -12,73 +12,54 @@
 require_once __DIR__ . '/../config/databaseConnection.php';
 
 class Article {
-    private $pdo;
+    private $db;
 
-    /**
-     * Constructor - Initializes database connection
-     */
-    public function __construct() {
-        global $pdo;
-        $this->pdo = $pdo;
+    // Constructor to receive PDO instance
+    public function __construct($db) {
+        $this->db = $db;
     }
 
-    /**
-     * Create a new article
-     * @param string $articleLink URL of the article
-     * @param string $previewImageLink URL of the preview image
-     * @param string $description Article description
-     * @return bool Success status
-     */
-    public function create($articleLink, $previewImageLink, $description) {
-        $sql = "INSERT INTO articles (article_link, preview_image_link, description) VALUES (?, ?, ?)";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([$articleLink, $previewImageLink, $description]);
-    }
+    public function getFilteredArticles($filters = []) {
+        $sql = "SELECT * FROM articles WHERE 1";
 
-    /**
-     * Get all articles
-     * @return array List of all articles
-     */
-    public function getAll() {
-        $sql = "SELECT * FROM articles ORDER BY created_at DESC";
-        $stmt = $this->pdo->query($sql);
+        if (isset($filters['topic'])) {
+            $sql .= " AND topic = :topic";
+        }
+        if (isset($filters['source_type'])) {
+            $sql .= " AND source_type = :source_type";
+        }
+        if (isset($filters['credibility'])) {
+            $sql .= " AND credibility = :credibility";
+        }
+        if (isset($filters['region'])) {
+            $sql .= " AND region = :region";
+        }
+        if (isset($filters['date_range'])) {
+            $dateRange = explode(":", $filters['date_range']);
+            $sql .= " AND publish_date BETWEEN :start_date AND :end_date";
+        }
+
+        $stmt = $this->db->prepare($sql);
+
+        if (isset($filters['topic'])) {
+            $stmt->bindParam(':topic', $filters['topic']);
+        }
+        if (isset($filters['source_type'])) {
+            $stmt->bindParam(':source_type', $filters['source_type']);
+        }
+        if (isset($filters['credibility'])) {
+            $stmt->bindParam(':credibility', $filters['credibility']);
+        }
+        if (isset($filters['region'])) {
+            $stmt->bindParam(':region', $filters['region']);
+        }
+        if (isset($filters['date_range'])) {
+            $stmt->bindParam(':start_date', $dateRange[0]);
+            $stmt->bindParam(':end_date', $dateRange[1]);
+        }
+
+        $stmt->execute();
+
         return $stmt->fetchAll();
     }
-
-    /**
-     * Get a single article by ID
-     * @param int $id Article ID
-     * @return array|false Article data or false if not found
-     */
-    public function getById($id) {
-        $sql = "SELECT * FROM articles WHERE id = ?";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$id]);
-        return $stmt->fetch();
-    }
-
-    /**
-     * Update an existing article
-     * @param int $id Article ID
-     * @param string $articleLink New article URL
-     * @param string $previewImageLink New preview image URL
-     * @param string $description New description
-     * @return bool Success status
-     */
-    public function update($id, $articleLink, $previewImageLink, $description) {
-        $sql = "UPDATE articles SET article_link = ?, preview_image_link = ?, description = ? WHERE id = ?";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([$articleLink, $previewImageLink, $description, $id]);
-    }
-
-    /**
-     * Delete an article
-     * @param int $id Article ID
-     * @return bool Success status
-     */
-    public function delete($id) {
-        $sql = "DELETE FROM articles WHERE id = ?";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([$id]);
-    }
-} 
+}
