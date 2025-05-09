@@ -92,9 +92,9 @@ if (isset($_POST['logout'])) {
             <div class="header-section">
                 <h1 class="header-title">Research Without the Doubt.</h1>
                 <div class="search-bar">
-                    <form action="POST">
+                    <form action="./controllers/search.php" method="POST">
                         <input type="text" placeholder="What are you researching today?" required>
-                        <button><i class="bi bi-search"></i></button>
+                        <button type="submit"><i class="bi bi-search"></i></button>
                     </form>
                 </div>
             </div>
