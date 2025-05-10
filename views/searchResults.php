@@ -66,7 +66,7 @@
       const date_range = document.getElementById('date_range').value;
       const query = document.getElementById('searchInput').value;
 
-      let url = '/CIS1202-FINAL-PROJ-2/api/articles.php';
+      let url = '/CIS1202-FINAL-PROJ/api/articles.php';
       const params = new URLSearchParams();
 
       if (topic) params.append('topic', topic);

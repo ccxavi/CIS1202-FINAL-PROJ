@@ -68,11 +68,16 @@ CREATE TABLE reactions (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE IF NOT EXISTS articles (
+CREATE TABLE articles (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    article_link VARCHAR(255) NOT NULL,
-    preview_image_link VARCHAR(255) NOT NULL,
-    description TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-); 
+    article_link TEXT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    topic VARCHAR(100),
+    source_type VARCHAR(100),
+    credibility VARCHAR(50),
+    region VARCHAR(100),
+    published_date DATE,
+    created_at DATE,
+    author TEXT
+);

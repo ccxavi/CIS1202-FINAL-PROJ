@@ -103,23 +103,24 @@ if (isset($_POST['logout'])) {
                     </div>
                     <div class="modal-body">
                         <!-- Profile Picture Section -->
-                        <div class="settings-section">
-                            <h6 class="settings-title">Profile Picture</h6>
-                            <div class="profile-pic-container">
-                                <img src="<?php echo htmlspecialchars($profilePic); ?>" alt="Profile Picture" class="settings-profile-pic">
-                                <form id="profilePicForm" action="./controllers/upload.php" method="POST" enctype="multipart/form-data">
-                                    <div class="mb-3">
-                                        <label for="profilePicUpload" class="form-label">Choose new image:</label>
-                                        <input class="form-control" type="file" id="profilePicUpload" name="profilePic" accept="image/*">
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+<div class="settings-section">
+    <h6 class="settings-title">Profile Picture</h6>
+    <div class="profile-pic-container">
+        <img id="profilePicPreview" src="<?php echo htmlspecialchars($profilePic); ?>" alt="Profile Picture" class="settings-profile-pic">
+        <form id="profilePicForm" action="./controllers/changeUserInfo.php" method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="profilePicUpload" class="form-label">Choose new image:</label>
+                <input class="form-control" type="file" id="profilePicUpload" name="profilePic" accept="image/*">
+            </div>
+        </form>
+    </div>
+</div>
+
                         <hr>
                         <!-- Account Information Section -->
                         <div class="settings-section">
                             <h6 class="settings-title">Account Information</h6>
-                            <form id="accountInfoForm" action="./controllers/updateAccount.php" method="POST">
+                            <form id="accountInfoForm" action="./controllers/changeUserInfo.php" method="POST">
                                 <div class="mb-3">
                                     <label for="username" class="form-label">Username</label>
                                     <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($user['username'] ?? ''); ?>">
@@ -135,8 +136,8 @@ if (isset($_POST['logout'])) {
                         <div class="settings-section">
                             <h6 class="settings-title">Change Password</h6>
                             <div id="passwordFeedback" class="alert alert-danger d-none mb-3"></div>
-                            <form id="passwordForm" action="./controllers/updatePassword.php" method="POST">
-                                <div class="mb-3">
+                            <form id="passwordForm" action="./controllers/changeUserInfo.php" method="POST">
+                            <div class="mb-3">
                                     <label for="currentPassword" class="form-label">Current Password</label>
                                     <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
                                 </div>
@@ -252,5 +253,8 @@ if (isset($_POST['logout'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-oOlRi4sW1cBnZDffpQMk/PJsL7n/WVnr0E7NTZ5jrCm24HdxH+/v5aUnInEF8qUF" crossorigin="anonymous"></script>
     <script src="./assets/js/userProfile.js"></script>
     <script src="./assets/js/changePassword.js"></script>
+    <script src="./assets/js/changeUserInfo.js"></script>
+    
+
 </body>
 </html>
