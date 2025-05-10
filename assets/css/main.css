@@ -24,6 +24,7 @@
   gap: 12px;
 }
 
+
 .header-title {
   width: 70%;
 }
@@ -73,20 +74,23 @@
   /* scrollbar-color: #666466 #e3e4e7; */
 }
 
+
 .trending-layout::-webkit-scrollbar {
-  width: 8px;
+  width: 8px; 
 }
 
 .trending-layout::-webkit-scrollbar-track {
   background: #e3e4e7;
-  border-radius: 0;
+  border-radius: 0; 
 }
 
 .trending-layout::-webkit-scrollbar-thumb {
   background: #666466;
   border: none;
-  border-radius: 5px;
+  border-radius: 5px; 
 }
+
+
 
 .trending-item {
   display: flex;
@@ -96,7 +100,7 @@
   align-items: center;
 }
 
-.trending-item-container {
+.trending-item-container{
   /* border: 2px solid black; */
 
   padding: 10px 20px;

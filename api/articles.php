@@ -38,6 +38,9 @@ try {
             if (isset($_GET['date_range'])) {
                 $filters['date_range'] = $_GET['date_range'];
             }
+            if (isset($_GET['description'])) {
+                $filters['description'] = $_GET['description'];
+            }
 
             $result = $article->getFilteredArticles($filters);
 

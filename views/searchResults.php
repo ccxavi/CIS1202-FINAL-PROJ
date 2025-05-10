@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Search Articles</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
   <style>
     img { max-width: 300px; display: block; margin-bottom: 10px; }
     .article { margin-bottom: 30px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
@@ -19,6 +20,8 @@
         <option value="Health">Health</option>
         <option value="Sports">Sports</option>
         <option value="Science">Science</option>
+        <option value="Science">Enviornment</option>
+
     </select>
 
     <select name="source_type" id="source_type">
@@ -48,6 +51,8 @@
     <button type="submit">Apply Filters</button>
   </form>
 
+  <a href="../index.php">Go Back</a>
+
   <br>
 
   <input type="text" id="searchInput" placeholder="Search description...">
@@ -57,54 +62,61 @@
 
   <div id="results"></div>
 
+
   <script>
     async function fetchArticles() {
-      const topic = document.getElementById('topic').value;
-      const source_type = document.getElementById('source_type').value;
-      const credibility = document.getElementById('credibility').value;
-      const region = document.getElementById('region').value;
-      const date_range = document.getElementById('date_range').value;
-      const query = document.getElementById('searchInput').value;
+  const topic = document.getElementById('topic').value;
+  const sourceType = document.getElementById('source_type').value;
+  const credibility = document.getElementById('credibility').value;
+  const region = document.getElementById('region').value;
+  const dateRange = document.getElementById('date_range').value;
+  const query = document.getElementById('searchInput').value;
 
-      let url = '/CIS1202-FINAL-PROJ-2/api/articles.php';
-      const params = new URLSearchParams();
+  let url = '/CIS1202-FINAL-PROJ-2/api/articles.php';
+  const params = new URLSearchParams();
 
-      if (topic) params.append('topic', topic);
-      if (source_type) params.append('source_type', source_type);
-      if (credibility) params.append('credibility', credibility);
-      if (region) params.append('region', region);
-      if (date_range) params.append('date_range', date_range);
-      if (query) params.append('description', query); // Assuming your API allows searching descriptions
+  if (topic) params.append('topic', topic);
+  if (sourceType) params.append('source_type', sourceType);
+  if (credibility) params.append('credibility', credibility);
+  if (region) params.append('region', region);
+  if (dateRange) params.append('date_range', dateRange);
+  if (query) params.append('description', query); // if you implement keyword search
 
-      if ([...params].length > 0) {
-        url += '?' + params.toString();
-      }
+  if ([...params].length > 0) {
+    url += '?' + params.toString();
+  }
 
-      try {
-        const res = await fetch(url);
-        const json = await res.json();
+  const res = await fetch(url);
+  const json = await res.json();
 
-        const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = '';
+  const resultsDiv = document.getElementById('results');
+  resultsDiv.innerHTML = '';
 
-        if (json.status === 'success' && json.data.length > 0) {
-          json.data.forEach(article => {
-            const div = document.createElement('div');
-            div.className = 'article';
-            div.innerHTML = `
-              <img src="${article.preview_image_link}" alt="Preview">
-              <p><strong>Link:</strong> <a href="${article.article_link}" target="_blank">${article.article_link}</a></p>
-              <p><strong>Description:</strong> ${article.description}</p>
-            `;
-            resultsDiv.appendChild(div);
-          });
-        } else {
-          resultsDiv.innerHTML = `<p>No articles found.</p>`;
-        }
-      } catch (error) {
-        document.getElementById('results').innerHTML = `<p>Error fetching articles.</p>`;
-      }
+  if (json.status === 'success') {
+    const articles = json.data;
+    if (articles.length === 0) {
+      resultsDiv.innerHTML = '<p>No articles found.</p>';
+      return;
     }
+
+    articles.forEach(article => {
+      const div = document.createElement('div');
+      div.className = 'article';
+      div.innerHTML = `
+        <h1>${article.title}</h1>
+        <img src="${article.preview_image_link}" alt="Preview">
+        <p><strong>Link:</strong> <a href="${article.article_link}" target="_blank">${article.article_link}</a></p>
+        <p><strong>Description:</strong> ${article.description}</p>
+        <i class="bi bi-star"></i>
+
+      `;
+      resultsDiv.appendChild(div);
+    });
+  } else {
+    resultsDiv.innerHTML = `<p>Error: ${json.message}</p>`;
+  }
+}
+
 
     // Fetch on page load with any pre-set query parameters
     window.onload = () => {
