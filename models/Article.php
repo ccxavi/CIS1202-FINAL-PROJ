@@ -20,50 +20,46 @@ class Article {
     }
 
     public function getFilteredArticles($filters = []) {
-        $sql = "SELECT * FROM articles WHERE 1=1";
-        $params = [];
-    
-        if (!empty($filters['description'])) {
-            $sql .= " AND description LIKE :description";
-            $params[':description'] = '%' . $filters['description'] . '%';
-        }
-    
-        if (!empty($filters['topic'])) {
+        $sql = "SELECT * FROM articles WHERE 1";
+
+        if (isset($filters['topic'])) {
             $sql .= " AND topic = :topic";
-            $params[':topic'] = $filters['topic'];
         }
-    
-        if (!empty($filters['source_type'])) {
+        if (isset($filters['source_type'])) {
             $sql .= " AND source_type = :source_type";
-            $params[':source_type'] = $filters['source_type'];
         }
-    
-        if (!empty($filters['credibility'])) {
+        if (isset($filters['credibility'])) {
             $sql .= " AND credibility = :credibility";
-            $params[':credibility'] = $filters['credibility'];
         }
-    
-        if (!empty($filters['region'])) {
+        if (isset($filters['region'])) {
             $sql .= " AND region = :region";
-            $params[':region'] = $filters['region'];
         }
-    
-        if (!empty($filters['date_range'])) {
-            $range = explode(':', $filters['date_range']);
-            if (count($range) === 2) {
-                $sql .= " AND publish_date BETWEEN :start_date AND :end_date";
-                $params[':start_date'] = $range[0];
-                $params[':end_date'] = $range[1];
-            }
+        if (isset($filters['date_range'])) {
+            $dateRange = explode(":", $filters['date_range']);
+            $sql .= " AND publish_date BETWEEN :start_date AND :end_date";
         }
-    
+
         $stmt = $this->db->prepare($sql);
-        foreach ($params as $key => $val) {
-            $stmt->bindValue($key, $val);
+
+        if (isset($filters['topic'])) {
+            $stmt->bindParam(':topic', $filters['topic']);
         }
-    
+        if (isset($filters['source_type'])) {
+            $stmt->bindParam(':source_type', $filters['source_type']);
+        }
+        if (isset($filters['credibility'])) {
+            $stmt->bindParam(':credibility', $filters['credibility']);
+        }
+        if (isset($filters['region'])) {
+            $stmt->bindParam(':region', $filters['region']);
+        }
+        if (isset($filters['date_range'])) {
+            $stmt->bindParam(':start_date', $dateRange[0]);
+            $stmt->bindParam(':end_date', $dateRange[1]);
+        }
+
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $stmt->fetchAll();
     }
-    
 }

@@ -15,8 +15,6 @@
   font-family: var(--poppins);
 }
 
-
-
 body {
   display: flex;
   flex-direction: column;
@@ -39,28 +37,3 @@ main {
   padding: 2rem;
   /* overflow-y: auto; */
 }
-
-.userProfile > img {
-  border-radius: 50%;
-}
-
-.userProfileBar {
-  background-color: var(--bg-color);
-  position: fixed;
-  right: 0;
-  top: 0;
-
-  width: 250px;
-  height: 100%;
-
-  border: 1px black solid;
-
-  transform: translateX(100%);
-  transition: transform 4 ease-outs;
-}
-
-.userProfileBar.show {
-  transform: translateX(0);
-}
-
-
