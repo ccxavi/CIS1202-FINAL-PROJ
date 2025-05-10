@@ -15,8 +15,6 @@
   font-family: var(--poppins);
 }
 
-
-
 body {
   display: flex;
   flex-direction: column;
@@ -62,5 +60,3 @@ main {
 .userProfileBar.show {
   transform: translateX(0);
 }
-
-

@@ -11,8 +11,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         handleRegister($_POST['userNameInput'], $_POST['email'], $_POST['password']);
     }}
 
-
-
 ?>
 
 
@@ -24,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Login/Register</title>
 
     <link rel="stylesheet" href="../assets/css/main.css">
-    <link rel="stylesheet" href="../assets/css/root.css">
+    <link rel="stylesheet" href="../assets/css/global.css">
 
     <link rel="stylesheet" href="../assets/css/loginRegister.css">
 </head>
