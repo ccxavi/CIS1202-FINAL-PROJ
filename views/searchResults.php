@@ -82,6 +82,8 @@ $results = $stmt->fetchAll();
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>searchResults</title>
+  <link rel="stylesheet" href="../assets/css/userDropdown.css">
+  <link rel="stylesheet" href="../assets/css/sidebar.css">
   <link rel="stylesheet" href="../assets/css/global.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Poppins" rel="stylesheet"/>
@@ -117,7 +119,7 @@ $results = $stmt->fetchAll();
       
       <a href='../views/community.php'>
         <div class="icon"><i class="fa fa-users fa-2x" aria-hidden="true"></i></div>
-        <div class='community'>Collection</div>
+        <div class='community'>Community</div>
       </a>
     </div>
   </aside>
@@ -184,7 +186,7 @@ $results = $stmt->fetchAll();
                             <h6 class="settings-title">Profile Picture</h6>
                             <div class="profile-pic-container">
                                 <img id="profilePicPreview" src=".<?php echo htmlspecialchars($profilePic); ?>" alt="Profile Picture" class="settings-profile-pic">
-                                <form id="profilePicForm" action="./controllers/changeUserInfo.php" method="POST" enctype="multipart/form-data">
+                                <form id="profilePicForm" action="../controllers/changeUserInfo.php" method="POST" enctype="multipart/form-data">
                                     <div class="mb-3">
                                         <label for="profilePicUpload" class="form-label">Choose new image:</label>
                                         <input class="form-control" type="file" id="profilePicUpload" name="profilePic" accept="image/*">
@@ -197,7 +199,7 @@ $results = $stmt->fetchAll();
                         <!-- Account Information Section -->
                         <div class="settings-section">
                             <h6 class="settings-title">Account Information</h6>
-                            <form id="accountInfoForm" action="./controllers/changeUserInfo.php" method="POST">
+                            <form id="accountInfoForm" action="../controllers/changeUserInfo.php" method="POST">
                                 <div class="mb-3">
                                     <label for="username" class="form-label">Username</label>
                                     <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($user['username'] ?? ''); ?>">
@@ -213,7 +215,7 @@ $results = $stmt->fetchAll();
                         <div class="settings-section">
                             <h6 class="settings-title">Change Password</h6>
                             <div id="passwordFeedback" class="alert alert-danger d-none mb-3"></div>
-                            <form id="passwordForm" action="./controllers/changeUserInfo.php" method="POST">
+                            <form id="passwordForm" action="../controllers/changeUserInfo.php" method="POST">
                             <div class="mb-3">
                                     <label for="currentPassword" class="form-label">Current Password</label>
                                     <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
@@ -316,12 +318,10 @@ $results = $stmt->fetchAll();
                       <p class="year">Date: <?= date('F j, Y', strtotime($article['published_date'])) ?></p>
                   </div>
                   <div class="paper-buttons">
-                      <button><i class="fas fa-eye"></i> Views: 123</button>
-                      <button class="inactive">
-                          <i class="fas fa-lock"></i> SB
-                      </button>
+                      <button>121<i class="fa fa-eye" aria-hidden="true"></i></button>
                       <button>
-                          <i class="fas fa-unlock"></i> OA
+                      <i class="fa fa-bookmark" aria-hidden="true"></i>
+
                       </button>
                   </div>
                 </article>
@@ -334,8 +334,8 @@ $results = $stmt->fetchAll();
   </div>
 
   <script src="../assets/js/userProfile.js"></script>
-    <script src="../assets/js/changePassword.js"></script>
-    <script src="../assets/js/changeUserInfo.js"></script>
+  <script src="../assets/js/changePassword.js"></script>
+  <script src="../assets/js/changeUserInfo.js"></script>
     
 </body>
 </html>
