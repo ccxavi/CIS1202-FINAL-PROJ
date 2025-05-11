@@ -420,10 +420,31 @@ hr {
 
 
 
+.sort-by select{
+  border: none;
+  /* border: 1px black solid; */
+  /* width: 5%; */
+}
 
+.sort-by select[id^="topic"]{
+  width: 4%;
+}
 
+.sort-by select[id^="source_type"]{
+  width: 7%;
+}
 
+.sort-by select[id^="credibility"]{
+  width: 6%;
+}
 
+.sort-by select[id^="region"]{
+  width: 5%;
+}
+
+.sort-by select[id^="date"]{
+  width: 4%;
+}
 
 section.content {
   padding: 32px 32px 40px 32px;
@@ -440,8 +461,10 @@ section.content h2 span {
   font-weight: 800;
 }
 .sort-by {
+  /* border: 1px black solid; */
+
   display: flex;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
   gap: 24px;
   font-size: 0.75rem;
   color: #6b7280;

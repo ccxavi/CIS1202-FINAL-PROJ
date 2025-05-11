@@ -4,7 +4,10 @@ session_start();
 require_once __DIR__ . '/../config/databaseConnection.php';
 require_once __DIR__ . '/../controllers/userAuthHandler.php';
 
-$searchQuery = $_GET['query'] ?? '';
+$sql = "SELECT * FROM articles WHERE 1";
+$params = [];
+
+$search = $_GET['query'] ?? '';
 
 
 if(isAuthenticated()){
@@ -18,18 +21,57 @@ if(isAuthenticated()){
 if (isset($_POST['logout'])) {
     handleSignOut();
 }
+if (!empty($search)) {
+  $keywords = [];
+  $allWords = preg_split('/\s+/', strtolower($search));
 
-if (isset($_GET['query']) && !empty(trim($_GET['query']))) {
-  $search = trim($_GET['query']);
-  $searchTerm = "%" . $search . "%";
+  $stopWords = ['a', 'an', 'the', 'and', 'or', 'but', 'if', 'of', 'on', 'in', 'to', 'with', 'as', 'by', 'for', 'at', 'from', 'is', 'not', 'that'];
+  foreach ($allWords as $word) {
+      if (!in_array($word, $stopWords) && strlen($word) > 1) {
+          $keywords[] = $word;
+      }
+  }
 
-  $sql = "SELECT * FROM articles WHERE title LIKE :search OR description LIKE :search";
-  $stmt = $pdo->prepare($sql);
-  $stmt->bindValue(':search', $searchTerm, PDO::PARAM_STR);
-  $stmt->execute();
-  $results = $stmt->fetchAll();
+  foreach ($keywords as $word) {
+      $sql .= " AND (title LIKE ? OR description LIKE ?)";
+      $params[] = "%$word%";
+      $params[] = "%$word%";
+  }
 }
 
+// Dropdown filters
+if (!empty($_GET['topic'])) {
+  $sql .= " AND topic = ?";
+  $params[] = $_GET['topic'];
+}
+
+if (!empty($_GET['source_type'])) {
+  $sql .= " AND source_type = ?";
+  $params[] = $_GET['source_type'];
+}
+
+if (!empty($_GET['credibility'])) {
+  $sql .= " AND credibility = ?";
+  $params[] = $_GET['credibility'];
+}
+
+if (!empty($_GET['region'])) {
+  $sql .= " AND region = ?";
+  $params[] = $_GET['region'];
+}
+
+if (!empty($_GET['year'])) {
+  $sql .= " AND YEAR(published_date) = ?";
+  $params[] = $_GET['year'];
+}
+
+// Optional: Order results (e.g., most recent first)
+$sql .= " ORDER BY published_date DESC";
+
+// Prepare and execute query
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
+$results = $stmt->fetchAll();
 ?>
 
 
@@ -195,45 +237,99 @@ if (isset($_GET['query']) && !empty(trim($_GET['query']))) {
             </div>
         </div>
     </header>
-    <section class="content">
-      <h2> Results for "<?php echo $searchQuery ?>" <span> </span></h2>
-      <div class="sort-by">
-        <strong>Sort by:</strong>
-        <button>Recent</button>
-        <button>Relevant</button>
-        <button>Views</button>
-        <button>Open-Access</button>
-        <button>Subscription-Based</button>
-      </div>
 
-      <!-- Example Card -->
+    <section class="content">
+      <h2> Results for "<?php echo $search ?>" <span> </span></h2>
       
-      <?php
-        if ($results) {
-          foreach ($results as $row) {
-              echo "<a href='" . htmlspecialchars($row['article_link']) . "' class='article-link'>";
-              echo "<article class='paper'>";
-              echo "<div class='paper-info'>";
-              echo "<h3>" . htmlspecialchars($row['title']) . "</h3>";
-              echo "<p>Author: " . htmlspecialchars($row['author']) . "</p>";
-              echo "<p class='year'>Date: " . htmlspecialchars($row['published_date']) . "</p>";
-              echo "</div>";
-              echo "<div class='paper-buttons'>";
-              echo "<button><i class='fas fa-eye'></i> Views: 123</button>"; // You can dynamically replace 123 with actual views count
-              echo "<button class='inactive'>";
-              echo "<i class='fas fa-lock'></i> SB <!-- Locked icon for Subscription-Based -->";
-              echo "</button>";
-              echo "<button>";
-              echo "<i class='fas fa-unlock'></i> OA <!-- Unlocked icon for Open-Access -->";
-              echo "</button>";
-              echo "</div>";
-              echo "</article>";
-              echo "</a>";
-          }
-      } else {
-          echo "<p>No results found for '<strong>" . htmlspecialchars($search) . "</strong>'</p>";
-      }
-      ?>
+      <form class="sort-by" method="GET" action="searchResults.php">
+      <input type="hidden" name="query" value="<?php echo htmlspecialchars($_GET['query'] ?? ''); ?>">
+
+        <strong>Sort by:</strong>
+
+        <select name="topic" id="topic">
+          <option value="">Topic</option>
+          <option>Artificial Intelligence</option>
+          <option>Cybersecurity</option>
+          <option>Computer Networks</option>
+          <option>Data Science</option>
+          <option>Blockchain</option>
+          <option>Computer Vision</option>
+          <option>Natural Language Processing</option>
+          <option>Human-Computer Interaction</option>
+          <option>Cloud Computing</option>
+          <option>High Energy Astrophysical Phenomena</option>
+        </select>
+
+        <select name="source_type" id="source_type">
+          <option value="">Source Type</option>
+          <option>Conference Paper</option>
+          <option>Journal Article</option>
+          <option>Preprint</option>
+          <option>Thesis</option>
+          <option>Technical Report</option>
+          <option>White Paper</option>
+          <option>Book Chapter</option>
+          <option>Dissertation</option>
+        </select>
+
+        <select name="credibility" id="credibility">
+          <option value="">Credibility</option>
+          <option>Peer-reviewed</option>
+          <option>Non-peer-reviewed</option>
+          <option>High Impact</option>
+          <option>Unverified</option>
+        </select>
+
+        <select name="region" id="region">
+          <option value="">Region</option>
+          <option>Global</option>
+          <option>International</option>
+          <option>Asia</option>
+          <option>Europe</option>
+          <option>North America</option>
+          <option>South America</option>
+          <option>Africa</option>
+          <option>Australia</option>
+        </select>
+
+        <select name="date" id="date">
+          <option value="">Date</option>
+          <?php
+            $currentYear = date('Y');
+            for ($year = $currentYear; $year >= 2010; $year--) {
+                echo "<option>$year</option>";
+            }
+          ?>
+        </select>
+
+        <!-- Submit button -->
+        <button type="submit">Apply Filters</button>
+      </form>
+            
+      <?php if (!empty($results)): ?>
+        <?php foreach ($results as $article): ?>
+            <a href="<?= htmlspecialchars($article['article_link']) ?>" class="paper" target="_blank">
+                <article class="paper">
+                  <div class="paper-info">
+                      <h3><?= htmlspecialchars($article['title']) ?></h3>
+                      <p>Author: <?= htmlspecialchars($article['author']) ?></p>
+                      <p class="year">Date: <?= date('F j, Y', strtotime($article['published_date'])) ?></p>
+                  </div>
+                  <div class="paper-buttons">
+                      <button><i class="fas fa-eye"></i> Views: 123</button>
+                      <button class="inactive">
+                          <i class="fas fa-lock"></i> SB
+                      </button>
+                      <button>
+                          <i class="fas fa-unlock"></i> OA
+                      </button>
+                  </div>
+                </article>
+            </a>
+        <?php endforeach; ?>
+    <?php else: ?>
+      <p>No results found for "<?= htmlspecialchars($search) ?>".</p>
+    <?php endif; ?>
     </section>
   </div>
 
