@@ -103,18 +103,18 @@ if (isset($_POST['logout'])) {
                     </div>
                     <div class="modal-body">
                         <!-- Profile Picture Section -->
-<div class="settings-section">
-    <h6 class="settings-title">Profile Picture</h6>
-    <div class="profile-pic-container">
-        <img id="profilePicPreview" src="<?php echo htmlspecialchars($profilePic); ?>" alt="Profile Picture" class="settings-profile-pic">
-        <form id="profilePicForm" action="./controllers/changeUserInfo.php" method="POST" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label for="profilePicUpload" class="form-label">Choose new image:</label>
-                <input class="form-control" type="file" id="profilePicUpload" name="profilePic" accept="image/*">
-            </div>
-        </form>
-    </div>
-</div>
+                        <div class="settings-section">
+                            <h6 class="settings-title">Profile Picture</h6>
+                            <div class="profile-pic-container">
+                                <img id="profilePicPreview" src="<?php echo htmlspecialchars($profilePic); ?>" alt="Profile Picture" class="settings-profile-pic">
+                                <form id="profilePicForm" action="./controllers/changeUserInfo.php" method="POST" enctype="multipart/form-data">
+                                    <div class="mb-3">
+                                        <label for="profilePicUpload" class="form-label">Choose new image:</label>
+                                        <input class="form-control" type="file" id="profilePicUpload" name="profilePic" accept="image/*">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
 
                         <hr>
                         <!-- Account Information Section -->
@@ -161,33 +161,11 @@ if (isset($_POST['logout'])) {
         </div>
     </header>
     <main>
-        <!-- Right Side Bar for User Account Settings -->
-        <!-- <div class="userProfileBar" id="userProfileBar">
-            <h1>
-                <?php
-                    // echo "Hi " . $user['username'];
-                ?>
-            </h1>
-
-            <form id="uploadForm" action="./controllers/upload.php" method="POST" enctype="multipart/form-data">
-                <label for="profilePic">Upload Profile Picture:</label><br>
-                <input type="file" name="profilePic" id="profilePic" accept="image/*" required><br><br>
-                <button type="submit">Upload</button>
-            </form>
-            
-            <?php
-                // if (isAuthenticated()){
-                //     echo "
-                //         <form method='post'><button type='submit' name='logout'>Log Out</button></form>";
-                // } 
-            ?>
-        </div> -->
-
         <div class="container">
             <div class="header-section">
                 <h1 class="header-title">Research Without the Doubt.</h1>
                 <div class="search-bar">
-                <form action="./controllers/search.php" method="POST">
+                <form action="./views/searchResults.php" method="GET">
                     <input type="text" name="query" placeholder="What are you researching today?" required>
                     <button type="submit"><i class="bi bi-search"></i></button>
                 </form>
