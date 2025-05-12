@@ -34,3 +34,13 @@ main {
   padding: 2rem;
   /* overflow-y: auto; */
 }
+.main-container {
+  margin: 40px 40px 0px;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 10px 20px rgb(0 0 0 / 0.1);
+  width: 100%;
+  max-width: 1487px;
+  display: flex;
+  flex-direction: column;
+}

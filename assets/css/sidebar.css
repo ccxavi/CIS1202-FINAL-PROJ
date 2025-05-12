@@ -1,6 +1,7 @@
 body {
   flex-direction: row !important;
   align-items: flex-start;
+  background-color: #f7f9ff !important;
   /* gap: 32px; */
 }
 /* Sidebar */
