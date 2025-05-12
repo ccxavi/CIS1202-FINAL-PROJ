@@ -91,7 +91,13 @@ function handleSignOut(){
     session_unset(); // Unset all session variables
     session_destroy(); // Destroy the session
 
-    header("Location: ./index.php");
+    // Determine if we're in the root directory or in a subdirectory
+    $script_path = $_SERVER['SCRIPT_NAME'];
+    $redirect_path = (strpos($script_path, '/views/') !== false) ? 
+        './loginRegister.php' : // If in views directory, use relative path
+        './views/loginRegister.php'; // If in root directory, include views directory
+    
+    header("Location: $redirect_path");
     exit();
 
 }

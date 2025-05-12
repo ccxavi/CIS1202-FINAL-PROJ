@@ -13,6 +13,7 @@ $userId = $_SESSION['userID'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_FILES['profilePic']) && $_FILES['profilePic']['error'] === UPLOAD_ERR_OK) {
+
     $uploadDir = '../assets/photo/Profile_Pictures/';
     // Ensure this path is relative from the web root for client-side display
     $webAccessibleUploadPath = './assets/photo/Profile_Pictures/'; 
@@ -28,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fileType = mime_content_type($fileTmp);
 
     if (in_array($fileType, $allowedTypes)) {
+
       if (!is_dir($uploadDir)) {
         if (!mkdir($uploadDir, 0755, true)) {
             echo json_encode(['success' => false, 'message' => 'Failed to create upload directory.']);
@@ -63,18 +65,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             exit();
         } catch (PDOException $e) {
+
             echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
             exit();
         }
       } else {
-        echo json_encode(['success' => false, 'message' => 'Error moving uploaded file. Check permissions for ' . $uploadDir]);
+        // Log upload error details
+        error_log("Failed to move uploaded file from $fileTmp to $targetFile");
+        error_log("Upload directory permissions: " . substr(sprintf('%o', fileperms($uploadDir)), -4));
+        error_log("PHP running as user: " . exec('whoami'));
+        
+        echo json_encode(['success' => false, 'message' => 'Error moving uploaded file. Server permission error.']);
+
       }
     } else {
       echo json_encode(['success' => false, 'message' => 'Invalid file type. Only JPG, PNG, and GIF allowed.']);
     }
   } else {
-    $uploadError = $_FILES['profilePic']['error'] ?? 'Unknown error';
-    echo json_encode(['success' => false, 'message' => 'No file uploaded or upload error. Error code: ' . $uploadError]);
+    $uploadError = isset($_FILES['profilePic']) ? $_FILES['profilePic']['error'] : 'No file data received';
+    $errorMessage = 'Upload error: ';
+    
+    // Translate error codes to human-readable messages
+    switch($uploadError) {
+        case UPLOAD_ERR_INI_SIZE:
+            $errorMessage .= 'File exceeds the upload_max_filesize directive in php.ini';
+            break;
+        case UPLOAD_ERR_FORM_SIZE:
+            $errorMessage .= 'File exceeds the MAX_FILE_SIZE directive in the HTML form';
+            break;
+        case UPLOAD_ERR_PARTIAL:
+            $errorMessage .= 'File was only partially uploaded';
+            break;
+        case UPLOAD_ERR_NO_FILE:
+            $errorMessage .= 'No file was uploaded';
+            break;
+        case UPLOAD_ERR_NO_TMP_DIR:
+            $errorMessage .= 'Missing a temporary folder';
+            break;
+        case UPLOAD_ERR_CANT_WRITE:
+            $errorMessage .= 'Failed to write file to disk';
+            break;
+        case UPLOAD_ERR_EXTENSION:
+            $errorMessage .= 'File upload stopped by extension';
+            break;
+        default:
+            $errorMessage .= 'Unknown upload error';
+    }
+    
+    error_log($errorMessage);
+    echo json_encode(['success' => false, 'message' => $errorMessage]);
+
   }
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid request method.']);

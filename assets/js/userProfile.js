@@ -1,3 +1,4 @@
+
 // Updated userProfile.js with new dropdown functionality
 
 document.addEventListener('DOMContentLoaded', function() {

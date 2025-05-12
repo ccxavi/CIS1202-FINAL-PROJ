@@ -180,55 +180,112 @@ if (isset($_POST['logout'])) {
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="saveSettingsBtn">Save Changes</button>
+                        <button type="button" class="btn btn-primary w-100" id="saveSettingsBtn">Save Changes</button>
                     </div>
                 </div>
             </div>
         </div>
     </header>
     <main>
-        <div class="container">
-            <div class="header-section">
-                <h1 class="header-title">Welcome to Vero - The Home of Verified Research</h1>
-                <p class="header-subtitle">Access reliable and verified research materials for your academic and professional needs.</p>
-                <div class="cta-buttons">
-                    <a href="./views/explore.php" class="btn btn-primary btn-lg">Explore Research</a>
-                    <?php if (!isAuthenticated()): ?>
-                    <a href="./views/loginRegister.php" class="btn btn-outline-primary btn-lg">Sign Up Now</a>
-                    <?php endif; ?>
+        <div class="hero-section">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1><span class="blue-text">Bridging</span> You Directly<br>to <em>Verified</em> Knowledge</h1>
+                    <p>One-click link to curated, fact-checked information from trusted sources.</p>
+                    <div class="cta-container">
+                        <a href="./views/explore.php" class="cta-button">Start Your Search</a>
+                    </div>
                 </div>
             </div>
-            
-            <div class="features-section mt-5">
-                <h2 class="text-center mb-4">Why Choose Vero?</h2>
-                <div class="row">
-                    <div class="col-md-4 mb-4">
-                        <div class="feature-card">
-                            <i class="bi bi-check-circle-fill text-success fs-1"></i>
-                            <h3>Verified Content</h3>
-                            <p>All research materials on our platform are verified by academic experts.</p>
+        </div>
+
+        <div class="info-section">
+            <div class="info-container">
+                <div class="info-left">
+                    <div class="definition-card">
+                        <h2>Vero <span class="pronunciation">| ˈvɛ-roʊ |</span></h2>
+                        <p class="definition">n. (Latin verus: true)</p>
+                        <ol>
+                            <li>Verified knowledge in its purest form</li>
+                            <li>The moment you find the perfect source</li>
+                        </ol>
+                        <p class="quote">"In a world of speculation, choose Vero."</p>
+                    </div>
+
+                    <div class="about-card">
+                        <div class="about-header">About Vero</div>
+                        <h2><span class="blue-text">Bridging</span> Curiosity to Credibility</h2>
+                        <p>In a world overflowing with misinformation, Vero cuts through the noise. We're not just another search engine; we're a direct pipeline to verified knowledge. Our platform connects you to rigorously vetted sources in one click, eliminating the endless hunt for trustworthy information. No algorithms. No SEO spam. Just knowledge you can stand on.</p>
+                    </div>
+
+                    <div class="why-card">
+                        <div class="why-header">Why We Exist</div>
+                        <ul class="why-list">
+                            <li><i class="bi bi-check-circle-fill"></i> To make credible research as accessible as a Google search</li>
+                            <li><i class="bi bi-check-circle-fill"></i> To combat misinformation at its source</li>
+                            <li><i class="bi bi-check-circle-fill"></i> To empower decisions backed by evidence, not influencers</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info-right">
+                    <img src="./assets/img/logo2.png" alt="Vero Academic Cap" class="info-image">
+                </div>
+            </div>
+        </div>
+
+        <div class="team-section">
+            <div class="team-container">
+                <h2 class="team-title">The <span class="blue-text">Truth</span> Squad</h2>
+                <p class="team-subtitle">The brilliant minds behind Vero</p>
+                
+                <div class="team-members">
+                    <div class="team-row top-row">
+                        <div class="team-member">
+                            <img src="./assets/img/Villarin.png" alt="Czach Villarin" class="member-avatar">
+                            <h3 class="member-name">Czach</h3>
+                            <p class="member-role">Full Stack Developer</p>
+                        </div>
+                        
+                        <div class="team-member">
+                            <img src="./assets/img/Cañete.png" alt="Emman Cañete" class="member-avatar">
+                            <h3 class="member-name">Emman</h3>
+                            <p class="member-role">Full Stack Developer</p>
                         </div>
                     </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="feature-card">
-                            <i class="bi bi-search fs-1 text-primary"></i>
-                            <h3>Easy Search</h3>
-                            <p>Find the exact research papers and materials you need with our powerful search tools.</p>
+                    
+                    <div class="team-row bottom-row">
+                        <div class="team-member">
+                            <img src="./assets/img/Miñoza.png" alt="Jared Miñoza" class="member-avatar">
+                            <h3 class="member-name">Jared</h3>
+                            <p class="member-role">Backend Developer</p>
                         </div>
-                    </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="feature-card">
-                            <i class="bi bi-people-fill fs-1 text-info"></i>
-                            <h3>Community</h3>
-                            <p>Connect with other researchers and academics in your field of study.</p>
+                        
+                        <div class="team-member">
+                            <img src="./assets/img/Moramosa.png" alt="Ren Moramosa" class="member-avatar">
+                            <h3 class="member-name">Ren</h3>
+                            <p class="member-role">Frontend Developer</p>
+                        </div>
+                        
+                        <div class="team-member">
+                            <img src="./assets/img/Galve.png" alt="Yñaki Galve" class="member-avatar">
+                            <h3 class="member-name">Yñaki</h3>
+                            <p class="member-role">UI/UX Designer</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
-    
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 <strong><em>Vero.</em></strong> All rights reserved.</p>
+            <div class="socials">
+                <a href="#"><div class="facebook"><i class="bi bi-facebook"></i></div></a>
+                <a href="#"><div class="github"><i class="bi bi-github"></i></div></a>
+                <a href="#"><div class="x"><i class="bi bi-twitter-x"></i></div></a>
+            </div>
+        </div>
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="./assets/js/userProfile.js"></script>
     <script src="./assets/js/changePassword.js"></script>
