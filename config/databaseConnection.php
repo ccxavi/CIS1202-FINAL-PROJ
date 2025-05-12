@@ -4,12 +4,6 @@ $username = "root";
 $password = "";
 $dbname = "veroDB";
 
-// $servername = "localhost";
-// $username = "s24103435_veroDB";
-// $password = "24103435";
-// $dbname = "s24103435_veroDB";
-
-
 try {
     $dsn = "mysql:host=$servername;dbname=$dbname;charset=utf8mb4";
     $pdo = new PDO($dsn, $username, $password);
