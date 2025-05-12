@@ -4,6 +4,21 @@ session_start();
 require_once __DIR__ . '/../controllers/userAuthHandler.php';
 // redirectIfAuthenticated(); // redirect to dashboard if authenticated
 
+if(isAuthenticated()){
+    $userID = $_SESSION['userID'];
+    $user = findUserByID($userID);
+    $profilePic = $user['profile_pic'] ?? '../assets/photo/Profile_Pictures/default.jpg';
+    
+    // If the profile pic path starts with './', convert it to '../'
+    if (strpos($profilePic, './') === 0) {
+        $profilePic = '../' . substr($profilePic, 2);
+    }
+    
+    // Redirect to home if already logged in
+    header('Location: ../index.php');
+    exit();
+}
+
 // Login form feedback
 $login_feedback = null;
 $login_email_error = null;
@@ -96,85 +111,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" crossorigin="anonymous">
     <link rel="stylesheet" href="../assets/css/auth.css">
-    <style>
-        .auth-card {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            padding: 2rem;
-            width: 420px;
-            max-width: 100%;
-        }
-        
-        .nav-tabs .nav-link {
-            color: #6c757d;
-            font-weight: 500;
-            padding: 10px 20px;
-            border: none;
-            position: relative;
-        }
-        
-        .nav-tabs .nav-link.active {
-            color: #0d6efd;
-            background: transparent;
-            border: none;
-        }
-        
-        .nav-tabs .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: #0d6efd;
-            border-radius: 3px 3px 0 0;
-        }
-        
-        .form-control {
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
-        }
-        
-        .form-control:focus {
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
-        }
-        
-        .btn-primary {
-            padding: 0.6rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 500;
-            margin-top: 0.5rem;
-        }
-        
-        .feedback-alert {
-            padding: 0.5rem 1rem;
-            margin-top: 0.5rem;
-            border-radius: 6px;
-            font-size: 0.875rem;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .main-container {
-            padding: 2rem 1rem;
-        }
-        
-        @media (min-width: 992px) {
-            .auth-card {
-                width: 450px;
-            }
-            
-            .main-container {
-                padding: 3rem;
-            }
-        }
-    </style>
 </head>
 <body>
     <header>
@@ -184,9 +120,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h2>Vero</h2>
             </div>
             <div class="links">
-                <a href="#"><div class="home">Home</div></a>
-                <a href="./index.php"><div class="explore">Explore</div></a>
-                <a href="./views/guide.php"><div class="guide">Guide</div></a>
+                <a href="../index.php"><div class="home">Home</div></a>
+                <a href="./explore.php"><div class="explore">Explore</div></a>
+                <a href="./guide.php"><div class="guide">Guide</div></a>
             </div>    
         </div>
         <div class="auth" id="auth">
@@ -213,61 +149,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="tab-content" id="authTabContent">
                     <div class="tab-pane fade <?php echo (!isset($_POST['register']) && !isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] === 'login')) || $login_feedback ? 'show active' : ''; ?>" id="login" role="tabpanel" aria-labelledby="login-tab">
                         <form method="POST" action="loginRegister.php">
-                            <div class="mb-3">
+                            <div class="form-group mb-3">
                                 <label for="email" class="form-label">Email</label>
                                 <input type="email" class="form-control" id="email" name="email" required>
                                 <?php if ($login_email_error): ?>
-                                    <div class="feedback-alert alert alert-<?php echo $login_email_error['type'] === 'danger' ? 'danger' : 'warning'; ?>">
-                                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    <div class="validation-feedback">
+                                        <i class="bi bi-exclamation-triangle-fill"></i>
                                         <?php echo htmlspecialchars($login_email_error['message']); ?>
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            <div class="mb-3">
+                            <div class="form-group mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" name="password" required>
+                                <div class="password-container">
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                                    <button type="button" class="password-toggle" id="togglePassword">
+                                        <i class="bi bi-eye-slash"></i>
+                                    </button>
+                                </div>
                                 <?php if ($login_password_error): ?>
-                                    <div class="feedback-alert alert alert-<?php echo $login_password_error['type'] === 'danger' ? 'danger' : 'warning'; ?>">
-                                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    <div class="validation-feedback">
+                                        <i class="bi bi-exclamation-triangle-fill"></i>
                                         <?php echo htmlspecialchars($login_password_error['message']); ?>
                                     </div>
                                 <?php endif; ?>
-                            </div>
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="keepLoggedIn" name="keepLoggedIn" checked>
-                                <label class="form-check-label" for="keepLoggedIn">Keep me Logged in</label>
                             </div>
                             <button type="submit" name="login" class="btn btn-primary w-100">Login</button>
                         </form>
                     </div>
                     <div class="tab-pane fade <?php echo (isset($_POST['register']) || (isset($_GET['tab']) && $_GET['tab'] === 'register')) || $register_feedback ? 'show active' : ''; ?>" id="register" role="tabpanel" aria-labelledby="register-tab">
                         <form method="POST" action="loginRegister.php">
-                            <div class="mb-3">
+                            <div class="form-group mb-3">
                                 <label for="userNameInput" class="form-label">User Name</label>
                                 <input type="text" class="form-control" id="userNameInput" name="userNameInput" required>
                                 <?php if ($register_username_error): ?>
-                                    <div class="feedback-alert alert alert-<?php echo $register_username_error['type'] === 'danger' ? 'danger' : 'warning'; ?>">
-                                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    <div class="validation-feedback">
+                                        <i class="bi bi-exclamation-triangle-fill"></i>
                                         <?php echo htmlspecialchars($register_username_error['message']); ?>
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            <div class="mb-3">
+                            <div class="form-group mb-3">
                                 <label for="registerEmail" class="form-label">Email</label>
                                 <input type="email" class="form-control" id="registerEmail" name="email" required>
                                 <?php if ($register_email_error): ?>
-                                    <div class="feedback-alert alert alert-<?php echo $register_email_error['type'] === 'danger' ? 'danger' : 'warning'; ?>">
-                                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    <div class="validation-feedback">
+                                        <i class="bi bi-exclamation-triangle-fill"></i>
                                         <?php echo htmlspecialchars($register_email_error['message']); ?>
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            <div class="mb-3">
+                            <div class="form-group mb-3">
                                 <label for="registerPassword" class="form-label">Password</label>
                                 <input type="password" class="form-control" id="registerPassword" name="password" required>
                                 <?php if ($register_password_error): ?>
-                                    <div class="feedback-alert alert alert-<?php echo $register_password_error['type'] === 'danger' ? 'danger' : 'warning'; ?>">
-                                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    <div class="validation-feedback">
+                                        <i class="bi bi-exclamation-triangle-fill"></i>
                                         <?php echo htmlspecialchars($register_password_error['message']); ?>
                                     </div>
                                 <?php endif; ?>
@@ -290,62 +227,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-    <script>
-        // Ensure the correct tab is active based on URL hash or feedback messages
-        document.addEventListener('DOMContentLoaded', function() {
-            const hash = window.location.hash;
-            if (hash) {
-                const tabToActivate = document.querySelector('.nav-tabs button[data-bs-target="' + hash + '"]');
-                if (tabToActivate) {
-                    const tab = new bootstrap.Tab(tabToActivate);
-                    tab.show();
-                }
-            }
-            // If PHP determined a tab should be active due to feedback, it would have added 'active' class already.
-            // This JS part is mainly for the #hash from URL.
-            
-            // Password length validation
-            const registerPassword = document.getElementById('registerPassword');
-            const loginPassword = document.getElementById('password');
-            
-            // Create feedback elements
-            const registerFeedback = document.createElement('div');
-            registerFeedback.className = 'form-text text-danger mt-1';
-            registerFeedback.style.display = 'none';
-            registerFeedback.textContent = 'Password must be at least 6 characters.';
-            
-            const loginFeedback = document.createElement('div');
-            loginFeedback.className = 'form-text text-danger mt-1';
-            loginFeedback.style.display = 'none';
-            loginFeedback.textContent = 'Password must be at least 6 characters.';
-            
-            // Add feedback elements after password inputs (if they don't already have PHP feedback)
-            if (!document.querySelector('#registerPassword + .form-text')) {
-                registerPassword.parentNode.insertBefore(registerFeedback, registerPassword.nextSibling);
-            }
-            
-            if (!document.querySelector('#password + .form-text')) {
-                loginPassword.parentNode.insertBefore(loginFeedback, loginPassword.nextSibling);
-            }
-            
-            // Validate register password on input
-            registerPassword.addEventListener('input', function() {
-                if (this.value.length > 0 && this.value.length < 6) {
-                    registerFeedback.style.display = 'block';
-                } else {
-                    registerFeedback.style.display = 'none';
-                }
-            });
-            
-            // Validate login password on input
-            loginPassword.addEventListener('input', function() {
-                if (this.value.length > 0 && this.value.length < 6) {
-                    loginFeedback.style.display = 'block';
-                } else {
-                    loginFeedback.style.display = 'none';
-                }
-            });
-        });
-    </script>
+    <script src="../assets/js/auth.js"></script>
 </body>
 </html>

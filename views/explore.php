@@ -7,7 +7,11 @@ require_once __DIR__ . '/../controllers/userAuthHandler.php';
 if(isAuthenticated()){
     $userID = $_SESSION['userID'];
     $user = findUserByID($userID);
-    $profilePic = $user['profile_pic'] ?? '../assets/photo/Profile_Pictures/default.jpg'; // Updated path
+    $profilePic = $user['profile_pic'] ?? '../assets/photo/Profile_Pictures/default.jpg';
+    
+    if (strpos($profilePic, './') === 0) {
+        $profilePic = '../' . substr($profilePic, 2);
+    }
 }
 
 if (isset($_POST['logout'])) {
@@ -21,9 +25,9 @@ if (isset($_POST['logout'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Explore Research - Vero</title>
+    <title>Vero | Explore</title>
     <link rel="stylesheet" href="../assets/css/global.css">
-    <link rel="stylesheet" href="../assets/css/explore.css">
+    <link rel="stylesheet" href="../assets/css/explore-auth.css">
     <link rel="stylesheet" href="../assets/css/userProfile.css">
     <link rel="stylesheet" href="../assets/css/header.css">
     <link rel="stylesheet" href="../assets/css/main.css">
@@ -180,8 +184,7 @@ if (isset($_POST['logout'])) {
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="saveSettingsBtn">Save Changes</button>
+                        <button type="button" class="btn btn-primary w-100" id="saveSettingsBtn">Save Changes</button>
                     </div>
                 </div>
             </div>
