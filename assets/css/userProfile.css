@@ -1,0 +1,73 @@
+/* assets/css/userProfile.css */
+
+/* Settings Modal Specific Styles */
+
+/* Styles for the vertical pill navigation (sidebar) */
+#settingsModal .nav-pills.flex-column .nav-link {
+  border-radius: 0.25rem; /* Standard Bootstrap rounding */
+  margin-bottom: 3px; /* Space between nav items */
+  padding: 0.65rem 0.75rem; /* Reduced horizontal padding */
+  text-align: left; /* Ensure text aligns to the start for a sidebar feel */
+  color: #495057; /* Default text color for links */
+  border: 1px solid transparent; /* Placeholder for consistent sizing, can be actual border */
+  white-space: nowrap; /* Prevent text from wrapping */
+}
+
+#settingsModal .nav-pills.flex-column .nav-link.active {
+  background-color: #0d6efd; /* Bootstrap primary blue */
+  color: white;
+  border-color: #0d6efd;
+}
+
+#settingsModal .nav-pills.flex-column .nav-link:not(.active):hover {
+  background-color: #e9ecef; /* Light grey hover */
+  color: #000;
+  border-color: #e9ecef;
+}
+
+/* Tab content area positioning next to the sidebar */
+#settingsModal .tab-content {
+  padding-left: 20px; /* Space between the sidebar column and the content column */
+}
+
+/* Individual tab pane - generally, padding is handled by sections within */
+#settingsModal .tab-pane {
+  padding-top: 0; /* Remove any top padding from the pane itself */
+}
+
+/* General styling for sections within each tab pane */
+#settingsModal .settings-section {
+  margin-bottom: 20px;
+}
+
+#settingsModal .settings-section:last-child {
+  margin-bottom: 0;
+}
+
+/* Profile picture specific spacing if needed */
+#settingsModal .profile-pic-container {
+  margin-bottom: 15px;
+}
+
+/* Feedback messages styling */
+#settingsModal .form-text {
+  min-height: 20px; /* Ensure space is reserved for feedback */
+  display: block; /* Make it a block to take full width and for margins */
+  margin-top: 0.35rem; /* A bit more space above the feedback text */
+  font-size: 0.875em; /* Slightly smaller text for feedback */
+}
+
+/* Commented out: Old styles for horizontal tabs, if any were here before. 
+   The primary goal is to ensure the new sidebar styles are clean.
+*/
+
+/* Example of how to add a border to the sidebar if desired */
+/*
+#settingsModal .col-md-7.col-lg-5 { /* Adjusted to match current col classes */
+/*    border-right: 1px solid #dee2e6;
+    padding-right: 15px; 
+}
+#settingsModal .col-md-5.col-lg-7 { /* Adjusted to match current col classes */
+/*    padding-left: 15px;
+}
+*/

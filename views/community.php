@@ -68,7 +68,7 @@ if (isset($_POST['logout'])) {
                 if (isAuthenticated()){
                     echo "<img src='." . htmlspecialchars($profilePic) . "' height='40px' weight'auto'>";
                 } else {
-                    echo "<a href='../views/loginRegister.php'>Login/Register</a>";
+                    echo "<a href='./views/loginRegister.php'>Login/Register</a>";
                 }
 
             ?>
