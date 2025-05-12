@@ -99,6 +99,7 @@ function handleSignOut(){
     
     header("Location: $redirect_path");
     exit();
+
 }
 
 function isAuthenticated()

@@ -13,7 +13,8 @@ $userId = $_SESSION['userID'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_FILES['profilePic']) && $_FILES['profilePic']['error'] === UPLOAD_ERR_OK) {
-    $uploadDir = __DIR__ . '/../assets/photo/Profile_Pictures/';
+
+    $uploadDir = '../assets/photo/Profile_Pictures/';
     // Ensure this path is relative from the web root for client-side display
     $webAccessibleUploadPath = './assets/photo/Profile_Pictures/'; 
     $fileTmp = $_FILES['profilePic']['tmp_name'];
@@ -28,45 +29,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fileType = mime_content_type($fileTmp);
 
     if (in_array($fileType, $allowedTypes)) {
-      // Ensure upload directory exists with proper permissions
+
       if (!is_dir($uploadDir)) {
-        // Create directory recursively with permissive permissions
-        if (!mkdir($uploadDir, 0777, true)) {
-            error_log("Failed to create directory: " . $uploadDir);
+        if (!mkdir($uploadDir, 0755, true)) {
             echo json_encode(['success' => false, 'message' => 'Failed to create upload directory.']);
             exit();
         }
-        // Set permissive permissions
-        chmod($uploadDir, 0777);
-      } else {
-        // If directory exists, make sure it has proper permissions
-        chmod($uploadDir, 0777);
       }
 
-      // Log the permissions for debugging
-      error_log("Directory permissions check: " . substr(sprintf('%o', fileperms($uploadDir)), -4));
-      
-      // Try to move the uploaded file
       if (move_uploaded_file($fileTmp, $targetFile)) {
-        // Make the uploaded file readable
-        chmod($targetFile, 0644);
-        
         try {
+            // Get the current profile picture before updating
+            $stmt = $pdo->prepare("SELECT profile_pic FROM users WHERE id = ?");
+            $stmt->execute([$userId]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            $previousPicPath = $user['profile_pic'] ?? '';
+            
+            // Update the user's profile_pic in the database
             $stmt = $pdo->prepare("UPDATE users SET profile_pic = ? WHERE id = ?");
             if ($stmt->execute([$targetPathForClient, $userId])){
-                // Log success and URL for debugging
-                error_log("Profile picture uploaded successfully. Path: " . $targetPathForClient);
+                // Delete previous profile picture if requested and if it's not the default picture
+                if (isset($_POST['deletePrevious']) && $_POST['deletePrevious'] === 'true' && 
+                    $previousPicPath && $previousPicPath !== './assets/photo/Profile_Pictures/default.jpg') {
+                    
+                    $previousPicFile = str_replace('./assets/photo/Profile_Pictures/', '../assets/photo/Profile_Pictures/', $previousPicPath);
+                    
+                    if (file_exists($previousPicFile) && is_file($previousPicFile)) {
+                        unlink($previousPicFile);
+                    }
+                }
                 
-                echo json_encode(['success' => true, 
-                                  'message' => 'Profile picture updated successfully.', 
-                                  'newProfilePicUrl' => $targetPathForClient]);
+                echo json_encode(['success' => true, 'message' => 'Profile picture updated successfully.', 'newProfilePicUrl' => $targetPathForClient]);
             } else {
-                error_log("Database error when updating profile_pic for user $userId");
                 echo json_encode(['success' => false, 'message' => 'Database error: Failed to update profile picture path.']);
             }
             exit();
         } catch (PDOException $e) {
-            error_log("PDO Exception: " . $e->getMessage());
+
             echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
             exit();
         }
@@ -77,6 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         error_log("PHP running as user: " . exec('whoami'));
         
         echo json_encode(['success' => false, 'message' => 'Error moving uploaded file. Server permission error.']);
+
       }
     } else {
       echo json_encode(['success' => false, 'message' => 'Invalid file type. Only JPG, PNG, and GIF allowed.']);
@@ -114,6 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     error_log($errorMessage);
     echo json_encode(['success' => false, 'message' => $errorMessage]);
+
   }
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid request method.']);

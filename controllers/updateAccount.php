@@ -6,62 +6,82 @@ session_start();
 header('Content-Type: application/json');
 
 if (!isset($_SESSION['userID'])) {
-    echo json_encode(['success' => false, 'message' => 'Authentication required.']);
+    echo json_encode(['success' => false, 'message' => 'Access denied. Please log in first.']);
     exit();
 }
 
-$userID = $_SESSION['userID'];
+$userId = $_SESSION['userID'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = isset($_POST['username']) ? trim($_POST['username']) : '';
-    $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-
-    // Validate input
+    // Get form data
+    $username = trim($_POST['username'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    
+    // Basic validation
     if (empty($username) || empty($email)) {
-        echo json_encode(['success' => false, 'message' => 'Username and email are required.']);
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Username and email are required.'
+        ]);
         exit();
     }
-
-    if (strlen($username) < 2) {
-        echo json_encode(['success' => false, 'message' => 'Username must be at least 2 characters.']);
-        exit();
-    }
-
+    
+    // Validate email
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echo json_encode(['success' => false, 'message' => 'Invalid email format.']);
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Please enter a valid email address.'
+        ]);
         exit();
     }
-
-    // Check if email is already in use by another user
-    $currentUser = findUserByID($userID); // Fetch current user details
-    if (!$currentUser) {
-        echo json_encode(['success' => false, 'message' => 'User not found.']);
+    
+    // Check if username already exists (excluding current user)
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = ? AND id != ?");
+    $stmt->execute([$username, $userId]);
+    if ($stmt->fetchColumn() > 0) {
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Username already taken. Please choose another.'
+        ]);
         exit();
     }
-
-    if (strtolower($email) !== strtolower($currentUser['email'])) {
-        $existingUserByEmail = findUserByEmail($email);
-        if ($existingUserByEmail) {
-            echo json_encode(['success' => false, 'message' => 'Email already in use by another account.']);
-            exit();
-        }
+    
+    // Check if email already exists (excluding current user)
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE email = ? AND id != ?");
+    $stmt->execute([$email, $userId]);
+    if ($stmt->fetchColumn() > 0) {
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Email already in use. Please use another email address.'
+        ]);
+        exit();
     }
-
+    
+    // Update user info
     try {
         $stmt = $pdo->prepare("UPDATE users SET username = ?, email = ? WHERE id = ?");
-        if ($stmt->execute([$username, $email, $userID])) {
-            // Optionally, update session data if username/email is stored there directly for display
-            // For now, client-side will refresh relevant parts or user can be prompted to re-login for some changes.
-            echo json_encode(['success' => true, 'message' => 'Account details updated successfully.', 'newUsername' => $username, 'newEmail' => $email]);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Failed to update account details.']);
-        }
+        $stmt->execute([$username, $email, $userId]);
+        
+        echo json_encode([
+            'success' => true, 
+            'message' => 'Account information updated successfully.',
+            'newUsername' => $username,
+            'newEmail' => $email
+        ]);
+        exit();
     } catch (PDOException $e) {
-        // Log error $e->getMessage() for server-side debugging
-        echo json_encode(['success' => false, 'message' => 'A database error occurred.']);
+        error_log("Database Error: " . $e->getMessage());
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Database error: ' . $e->getMessage()
+        ]);
+        exit();
     }
-
 } else {
-    echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Invalid request method. Only POST requests are accepted.'
+    ]);
+    exit();
 }
 ?> 

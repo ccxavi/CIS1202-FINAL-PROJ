@@ -7,11 +7,8 @@ require_once __DIR__ . '/../controllers/userAuthHandler.php';
 if(isAuthenticated()){
     $userID = $_SESSION['userID'];
     $user = findUserByID($userID);
-    $profilePic = $user['profile_pic'] ?? '../assets/photo/Profile_Pictures/default.jpg';
-    
-    if (strpos($profilePic, './') === 0) {
-        $profilePic = '../' . substr($profilePic, 2);
-    }
+
+    $profilePic = $user['profile_pic'] ?? '../assets/photo/Profile_Pictures/default.jpg'; // Updated path
 }
 
 if (isset($_POST['logout'])) {
@@ -28,6 +25,7 @@ if (isset($_POST['logout'])) {
     <title>Vero | Explore</title>
     <link rel="stylesheet" href="../assets/css/global.css">
     <link rel="stylesheet" href="../assets/css/explore-auth.css">
+
     <link rel="stylesheet" href="../assets/css/userProfile.css">
     <link rel="stylesheet" href="../assets/css/header.css">
     <link rel="stylesheet" href="../assets/css/main.css">
@@ -36,6 +34,19 @@ if (isset($_POST['logout'])) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" crossorigin="anonymous">
 </head>
 <body>
+
+<style>
+.modal.show {
+    display: block!important;
+    background-color: rgba(0,0,0,0.5);
+}
+.modal-backdrop {
+    z-index: 1040!important;
+}
+.modal {
+    z-index: 1050!important;
+}
+</style>
     <header>
         <div class="navbar">
             <div class="logo">
@@ -63,7 +74,7 @@ if (isset($_POST['logout'])) {
                 echo '
                 <div class="user-dropdown-container">
                     <div class="user-dropdown-toggle">
-                        <img src="' . htmlspecialchars($profilePic) . '" alt="Profile">
+                <img src=".' . htmlspecialchars($profilePic) . '" alt="Profile">
                         <div class="user-info">
                             <div class="username">' . htmlspecialchars($user['username']) . '</div>
                             <div class="user-role">' . htmlspecialchars($user['email']) . '</div>
@@ -73,7 +84,8 @@ if (isset($_POST['logout'])) {
 
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li class="dropdown-section text-center">
-                            <img src="' . htmlspecialchars($profilePic) . '" alt="Profile Picture" class="settings-profile-pic" style="width: 64px; height: 64px; margin-bottom: 8px;">
+
+                            <img src=".' . htmlspecialchars($profilePic) . '" alt="Profile Picture" class="settings-profile-pic" style="width: 64px; height: 64px; margin-bottom: 8px;">
                             <div><strong>' . htmlspecialchars($user['username']) . '</strong></div>
                             <div class="user-email">' . htmlspecialchars($user['email']) . '</div>
                         </li>
@@ -81,7 +93,8 @@ if (isset($_POST['logout'])) {
                             <a href="#" class="dropdown-item full-width"><i class="bi bi-person-fill"></i> View Profile</a>
                         </li>
                         <li class="dropdown-item-wrapper">
-                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal"><i class="bi bi-gear-fill"></i> Settings</a>
+
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal" onclick="showSettingsModal()"><i class="bi bi-gear-fill"></i> Settings</a>
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
@@ -127,7 +140,8 @@ if (isset($_POST['logout'])) {
                                     <div class="tab-pane fade show active" id="profilePicContent" role="tabpanel" aria-labelledby="profile-pic-tab">
                                         <div class="settings-section">
                                             <div class="profile-pic-container text-center mb-3">
-                                                <img src="<?php echo htmlspecialchars($profilePic); ?>" alt="Profile Picture" class="settings-profile-pic img-thumbnail rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+
+                                                <img src=".<?php echo htmlspecialchars($profilePic); ?>" alt="Profile Picture" class="settings-profile-pic img-thumbnail rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
                                             </div>
                                             <form id="profilePicForm" enctype="multipart/form-data">
                                                 <div class="mb-3">
@@ -184,7 +198,8 @@ if (isset($_POST['logout'])) {
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary w-100" id="saveSettingsBtn">Save Changes</button>
+               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveSettingsBtn">Save Changes</button>
                     </div>
                 </div>
             </div>
@@ -261,5 +276,8 @@ if (isset($_POST['logout'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="../assets/js/userProfile.js"></script>
     <script src="../assets/js/changePassword.js"></script>
+
+    <script src="../assets/js/changeUserInfo.js"></script>
+    <script src="../assets/js/modalInit.js"></script>
 </body>
 </html> 

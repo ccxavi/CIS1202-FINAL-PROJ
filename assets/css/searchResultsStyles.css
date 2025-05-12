@@ -118,41 +118,46 @@ section.content h2 span {
 .sort-by button:hover {
   text-decoration: underline;
 }
-article.paper {
+.paper {
   background-color: #eff5ff;
   border-radius: 0.75rem;
-  padding: 16px 24px;
   margin-bottom: 16px;
+  text-decoration: none !important;
+  color: inherit !important;
+}
+.paper article {
+  padding: 16px 24px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
 }
-article.paper h3 {
+.paper-info {
+  flex-grow: 1;
+  min-width: 0;
+}
+.paper-info h3 {
   font-weight: 800;
   font-size: 1rem;
   color: #111827;
   margin: 0 0 4px 0;
   line-height: 1.2;
-  user-select: text;
 }
-article.paper p {
+.paper-info p {
   font-size: 0.75rem;
   font-weight: 600;
   color: #374151;
   margin: 0 0 4px 0;
-  user-select: text;
 }
-article.paper p.year {
-  margin-bottom: 0;
+.paper-info .article-link {
+  display: inline-block;
+  color: #007bff;
+  text-decoration: none;
+  margin-top: 8px;
+  font-size: 0.875rem;
 }
-article.paper.inactive h3,
-article.paper.inactive p {
-  color: #9ca3af;
-}
-.paper-info {
-  flex-grow: 1;
-  min-width: 0;
+.paper-info .article-link:hover {
+  text-decoration: underline;
 }
 .paper-buttons {
   display: flex;
@@ -226,4 +231,79 @@ article.paper.inactive p {
     align-items: flex-start;
     gap: 12px;
   }
+}
+
+.bookmark-container {
+  position: relative;
+  margin-left: auto;
+  padding: 10px;
+  z-index: 2;
+}
+
+.bookmark-icon {
+  font-size: 1.5em;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.bookmark-icon:hover {
+  color: #007bff;
+}
+
+.collections-dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  width: 200px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  display: none;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.bookmark-container:hover .collections-dropdown {
+  display: block;
+}
+
+.dropdown-header {
+  padding: 10px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #eee;
+  font-weight: 500;
+}
+
+.collections-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.collection-item {
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.collection-item:hover {
+  background-color: #f8f9fa;
+  color: #007bff;
+}
+
+.no-collections, .login-prompt {
+  padding: 10px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
+/* Prevent link click on bookmark */
+.bookmark-container {
+  position: relative;
+  z-index: 2;
+}
+
+.bookmark-container * {
+  pointer-events: auto;
 }
