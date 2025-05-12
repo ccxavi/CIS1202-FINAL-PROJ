@@ -1,13 +1,13 @@
 <?php
 session_start();
 
-require_once __DIR__ . '/config/databaseConnection.php';
-require_once __DIR__ . '/controllers/userAuthHandler.php';
+require_once __DIR__ . '/../config/databaseConnection.php';
+require_once __DIR__ . '/../controllers/userAuthHandler.php';
 
 if(isAuthenticated()){
     $userID = $_SESSION['userID'];
     $user = findUserByID($userID);
-    $profilePic = $user['profile_pic'] ?? './assets/photo/Profile_Pictures/default.jpg'; // fallback if null
+    $profilePic = $user['profile_pic'] ?? '../assets/photo/Profile_Pictures/default.jpg'; // Updated path
 }
 
 if (isset($_POST['logout'])) {
@@ -21,13 +21,13 @@ if (isset($_POST['logout'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vero - Verified Research</title>
-    <link rel="stylesheet" href="./assets/css/global.css">
-    <link rel="stylesheet" href="./assets/css/home.css">
-    <link rel="stylesheet" href="./assets/css/userProfile.css">
-    <link rel="stylesheet" href="./assets/css/header.css">
-    <link rel="stylesheet" href="./assets/css/main.css">
-    <link rel="stylesheet" href="./assets/css/footer.css">
+    <title>Explore Research - Vero</title>
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/explore.css">
+    <link rel="stylesheet" href="../assets/css/userProfile.css">
+    <link rel="stylesheet" href="../assets/css/header.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/footer.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" crossorigin="anonymous">
 </head>
@@ -35,18 +35,18 @@ if (isset($_POST['logout'])) {
     <header>
         <div class="navbar">
             <div class="logo">
-                <img src="./assets/img/logo.png" alt="logo">
+                <img src="../assets/img/logo.png" alt="logo">
                 <h2>Vero</h2>
             </div>
             <div class="links">
-                <a href="./index.php"><div class="home">Home</div></a>
-                <a href="./views/explore.php"><div class="explore">Explore</div></a>
-                <a href="./views/guide.php"><div class="guide">Guide</div></a>
+                <a href="../index.php"><div class="home">Home</div></a>
+                <a href="./explore.php"><div class="explore">Explore</div></a>
+                <a href="./guide.php"><div class="guide">Guide</div></a>
                 <?php
                     if (isAuthenticated()){
                         echo "
-                            <a href='./views/collection.php'><div class='collection'>Collection</div></a>
-                            <a href='./views/community.php'><div class='community'>Community</div></a>
+                            <a href='./collection.php'><div class='collection'>Collection</div></a>
+                            <a href='./community.php'><div class='community'>Community</div></a>
                             ";
                     } 
                 ?>
@@ -88,7 +88,7 @@ if (isset($_POST['logout'])) {
                     </ul>
                 </div>';
             } else {
-                echo '<a href="./views/loginRegister.php">Login/Register</a>';
+                echo '<a href="./loginRegister.php">Login/Register</a>';
             }
         ?>
         </div>
@@ -190,48 +190,73 @@ if (isset($_POST['logout'])) {
     <main>
         <div class="container">
             <div class="header-section">
-                <h1 class="header-title">Welcome to Vero - The Home of Verified Research</h1>
-                <p class="header-subtitle">Access reliable and verified research materials for your academic and professional needs.</p>
-                <div class="cta-buttons">
-                    <a href="./views/explore.php" class="btn btn-primary btn-lg">Explore Research</a>
-                    <?php if (!isAuthenticated()): ?>
-                    <a href="./views/loginRegister.php" class="btn btn-outline-primary btn-lg">Sign Up Now</a>
-                    <?php endif; ?>
+                <h1 class="header-title">Research Without the Doubt.</h1>
+                <div class="search-bar">
+                <form action="../controllers/search.php" method="POST">
+                    <input type="text" name="query" placeholder="What are you researching today?" required>
+                    <button type="submit"><i class="bi bi-search"></i></button>
+                </form>
                 </div>
             </div>
-            
-            <div class="features-section mt-5">
-                <h2 class="text-center mb-4">Why Choose Vero?</h2>
-                <div class="row">
-                    <div class="col-md-4 mb-4">
-                        <div class="feature-card">
-                            <i class="bi bi-check-circle-fill text-success fs-1"></i>
-                            <h3>Verified Content</h3>
-                            <p>All research materials on our platform are verified by academic experts.</p>
-                        </div>
+
+            <div class="trending-section">
+                <h5 class="trending-heading">Trending Topics, All Verified.</h5>
+                <div class="trending-layout">
+                    <div class="trending-item-container">
+                        <div class="trending-item">
+                        <button><i class="bi bi-eye"></i></button>
+                        <div class="title">The Impact of Climate Change on Marine Biodiversity</div>
                     </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="feature-card">
-                            <i class="bi bi-search fs-1 text-primary"></i>
-                            <h3>Easy Search</h3>
-                            <p>Find the exact research papers and materials you need with our powerful search tools.</p>
-                        </div>
+                    <div class="trending-item">
+                        <button><i class="bi bi-eye"></i></button>
+                        <div class="title">Artificial Intelligence in Modern Medical Diagnostics</div>
                     </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="feature-card">
-                            <i class="bi bi-people-fill fs-1 text-info"></i>
-                            <h3>Community</h3>
-                            <p>Connect with other researchers and academics in your field of study.</p>
-                        </div>
+                    <div class="trending-item">
+                        <button><i class="bi bi-eye"></i></button>
+                        <div class="title">The Role of Nanotechnology in Cancer Treatment</div>
+                    </div>
+                    <div class="trending-item">
+                        <button><i class="bi bi-eye"></i></button>
+                        <div class="title">Renewable Energy Solutions for Developing Nations</div>
+                    </div>
+                    <div class="trending-item">
+                        <button><i class="bi bi-eye"></i></button>
+                        <div class="title">Exploring Genetic Editing Using CRISPR Technology</div>
+                    </div>
+                    <div class="trending-item">
+                        <button><i class="bi bi-eye"></i></button>
+                        <div class="title">The Effects of Social Media on Adolescent Psychology</div>
+                    </div>
+                    <div class="trending-item">
+                        <button><i class="bi bi-eye"></i></button>
+                        <div class="title">Quantum Computing: The Next Frontier in Data Security</div>
+                    </div>
+                    <div class="trending-item">
+                        <button><i class="bi bi-eye"></i></button>
+                        <div class="title">Urban Farming as a Sustainable Food Source</div>
+                    </div>
+                    <div class="trending-item">
+                        <button><i class="bi bi-eye"></i></button>
+                        <div class="title">Language Models and Their Role in Education Reform</div>
+                    </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
     
- -->
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 <strong><em>Vero.</em></strong> All rights reserved.</p>
+            <div class="socials">
+                <a href="#"><div class="facebook"><i class="bi bi-facebook"></i></div></a>
+                <a href="#"><div class="github"><i class="bi bi-github"></i></div></a>
+                <a href="#"><div class="x"><i class="bi bi-twitter-x"></i></div></a>
+            </div>
+        </div>
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-    <script src="./assets/js/userProfile.js"></script>
-    <script src="./assets/js/changePassword.js"></script>
+    <script src="../assets/js/userProfile.js"></script>
+    <script src="../assets/js/changePassword.js"></script>
 </body>
-</html>
+</html> 

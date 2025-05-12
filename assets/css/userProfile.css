@@ -27,21 +27,29 @@
 
 /* Tab content area positioning next to the sidebar */
 #settingsModal .tab-content {
-  padding-left: 20px; /* Space between the sidebar column and the content column */
+  padding-left: 25px; /* Increased space between sidebar and content */
+  padding-top: 5px; /* Small top padding for alignment with first nav item */
 }
 
-/* Individual tab pane - generally, padding is handled by sections within */
+/* Individual tab pane - uniform padding/margin */
 #settingsModal .tab-pane {
-  padding-top: 0; /* Remove any top padding from the pane itself */
+  padding: 10px 0; /* Consistent vertical padding, no horizontal as .tab-content handles left */
 }
 
 /* General styling for sections within each tab pane */
 #settingsModal .settings-section {
-  margin-bottom: 20px;
+  margin-bottom: 25px; /* Uniform bottom margin for sections */
 }
 
 #settingsModal .settings-section:last-child {
   margin-bottom: 0;
+}
+
+/* Headings within settings tabs */
+#settingsModal .settings-section .settings-title {
+  font-size: 1.25rem; /* Larger heading */
+  margin-bottom: 1rem; /* Space below heading */
+  color: #333;
 }
 
 /* Profile picture specific spacing if needed */
