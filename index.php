@@ -1,4 +1,4 @@
-    <?php
+<?php
 session_start();
 
 require_once __DIR__ . '/config/databaseConnection.php';
@@ -7,6 +7,8 @@ require_once __DIR__ . '/controllers/userAuthHandler.php';
 if(isAuthenticated()){
     $userID = $_SESSION['userID'];
     $user = findUserByID($userID);
+
+    
     $profilePic = $user['profile_pic'] ?? './assets/photo/Profile_Pictures/default.jpg'; // fallback if null
 }
 
@@ -27,8 +29,8 @@ if (isset($_POST['logout'])) {
     <link rel="stylesheet" href="./assets/css/header.css">
     <link rel="stylesheet" href="./assets/css/main.css">
     <link rel="stylesheet" href="./assets/css/footer.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
 </head>
 <body>
     <header>
@@ -100,120 +102,70 @@ if (isset($_POST['logout'])) {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row">
-                            <!-- Sidebar Navigation -->
-                            <div class="col-md-7 col-lg-5">
-                                <ul class="nav nav-pills flex-column" id="settingsTab" role="tablist">
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link active w-100 text-start" id="profile-pic-tab" data-bs-toggle="pill" data-bs-target="#profilePicContent" type="button" role="tab" aria-controls="profilePicContent" aria-selected="true"><i class="bi bi-person-circle me-2"></i>Profile Picture</button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link w-100 text-start" id="account-info-tab" data-bs-toggle="pill" data-bs-target="#accountInfoContent" type="button" role="tab" aria-controls="accountInfoContent" aria-selected="false"><i class="bi bi-person-vcard me-2"></i>Account Details</button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link w-100 text-start" id="password-tab" data-bs-toggle="pill" data-bs-target="#passwordContent" type="button" role="tab" aria-controls="passwordContent" aria-selected="false"><i class="bi bi-shield-lock me-2"></i>Change Password</button>
-                                    </li>
-                                </ul>
+                        <!-- Profile Picture Section -->
+                        <div class="settings-section">
+                            <h6 class="settings-title">Profile Picture</h6>
+                            <div class="profile-pic-container">
+                                <img id="profilePicPreview" src="<?php echo htmlspecialchars($profilePic); ?>" alt="Profile Picture" class="settings-profile-pic">
+                                <form id="profilePicForm" action="./controllers/changeUserInfo.php" method="POST" enctype="multipart/form-data">
+                                    <div class="mb-3">
+                                        <label for="profilePicUpload" class="form-label">Choose new image:</label>
+                                        <input class="form-control" type="file" id="profilePicUpload" name="profilePic" accept="image/*">
+                                    </div>
+                                </form>
                             </div>
-                            <!-- Tab Content Area -->
-                            <div class="col-md-5 col-lg-7">
-                                <div class="tab-content" id="settingsTabContent">
-                                    <!-- Profile Picture Tab Content -->
-                                    <div class="tab-pane fade show active" id="profilePicContent" role="tabpanel" aria-labelledby="profile-pic-tab">
-                                        <div class="settings-section">
-                                            <div class="profile-pic-container text-center mb-3">
-                                                <img src="<?php echo htmlspecialchars($profilePic); ?>" alt="Profile Picture" class="settings-profile-pic img-thumbnail rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
-                                            </div>
-                                            <form id="profilePicForm" enctype="multipart/form-data">
-                                                <div class="mb-3">
-                                                    <label for="profilePicUpload" class="form-label visually-hidden">Choose new image:</label>
-                                                    <input class="form-control form-control-sm" type="file" id="profilePicUpload" name="profilePic" accept="image/jpeg,image/png,image/gif">
-                                                </div>
-                                                <div id="profilePicFeedback" class="form-text" style="min-height: 20px;"></div>
-                                            </form>
-                                        </div>
-                                    </div>
+                        </div>
 
-                                    <!-- Account Information Tab Content -->
-                                    <div class="tab-pane fade" id="accountInfoContent" role="tabpanel" aria-labelledby="account-info-tab">
-                                        <div class="settings-section">
-                                            <h6 class="settings-title">Account Information</h6>
-                                            <form id="accountInfoForm">
-                                                <div class="mb-3">
-                                                    <label for="usernameModal" class="form-label">Username</label>
-                                                    <input type="text" class="form-control" id="usernameModal" name="username" value="<?php echo htmlspecialchars($user['username'] ?? ''); ?>">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="emailModal" class="form-label">Email</label>
-                                                    <input type="email" class="form-control" id="emailModal" name="email" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>">
-                                                </div>
-                                                <div id="accountInfoFeedback" class="form-text" style="min-height: 20px;"></div>
-                                            </form>
-                                        </div>
-                                    </div>
-
-                                    <!-- Change Password Tab Content -->
-                                    <div class="tab-pane fade" id="passwordContent" role="tabpanel" aria-labelledby="password-tab">
-                                        <div class="settings-section">
-                                            <h6 class="settings-title">Change Password</h6>
-                                            <div id="passwordChangeFeedback" class="form-text" style="min-height: 20px;"></div>
-                                            <form id="passwordForm">
-                                                <div class="mb-3">
-                                                    <label for="currentPassword" class="form-label">Current Password</label>
-                                                    <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="newPassword" class="form-label">New Password</label>
-                                                    <input type="password" class="form-control" id="newPassword" name="newPassword" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                                                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
-                                                    <div class="form-text text-danger" id="passwordMatchError"></div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
+                        <hr>
+                        <!-- Account Information Section -->
+                        <div class="settings-section">
+                            <h6 class="settings-title">Account Information</h6>
+                            <form id="accountInfoForm" action="./controllers/changeUserInfo.php" method="POST">
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Username</label>
+                                    <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($user['username'] ?? ''); ?>">
                                 </div>
-                            </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>">
+                                </div>
+                            </form>
+                        </div>
+                        <hr>
+                        <!-- Change Password Section -->
+                        <div class="settings-section">
+                            <h6 class="settings-title">Change Password</h6>
+                            <div id="passwordFeedback" class="alert alert-danger d-none mb-3"></div>
+                            <form id="passwordForm" action="./controllers/changeUserInfo.php" method="POST">
+                            <div class="mb-3">
+                                    <label for="currentPassword" class="form-label">Current Password</label>
+                                    <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newPassword" class="form-label">New Password</label>
+                                    <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                                    <div class="form-text text-danger" id="passwordMatchError"></div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="saveSettingsBtn">Save Changes</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
                     </div>
                 </div>
             </div>
         </div>
     </header>
     <main>
-        <!-- Right Side Bar for User Account Settings -->
-        <!-- <div class="userProfileBar" id="userProfileBar">
-            <h1>
-                <?php
-                    // echo "Hi " . $user['username'];
-                ?>
-            </h1>
-
-            <form id="uploadForm" action="./controllers/upload.php" method="POST" enctype="multipart/form-data">
-                <label for="profilePic">Upload Profile Picture:</label><br>
-                <input type="file" name="profilePic" id="profilePic" accept="image/*" required><br><br>
-                <button type="submit">Upload</button>
-            </form>
-            
-            <?php
-                // if (isAuthenticated()){
-                //     echo "
-                //         <form method='post'><button type='submit' name='logout'>Log Out</button></form>";
-                // } 
-            ?>
-        </div> -->
-
         <div class="container">
             <div class="header-section">
                 <h1 class="header-title">Research Without the Doubt.</h1>
                 <div class="search-bar">
-                <form action="./controllers/search.php" method="POST">
+                <form action="./views/searchResults.php" method="GET">
                     <input type="text" name="query" placeholder="What are you researching today?" required>
                     <button type="submit"><i class="bi bi-search"></i></button>
                 </form>
@@ -276,8 +228,11 @@ if (isset($_POST['logout'])) {
             </div>
         </div>
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-oOlRi4sW1cBnZDffpQMk/PJsL7n/WVnr0E7NTZ5jrCm24HdxH+/v5aUnInEF8qUF" crossorigin="anonymous"></script>
     <script src="./assets/js/userProfile.js"></script>
     <script src="./assets/js/changePassword.js"></script>
+    <script src="./assets/js/changeUserInfo.js"></script>
+    
+
 </body>
 </html>
