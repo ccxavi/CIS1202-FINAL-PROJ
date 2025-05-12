@@ -1,0 +1,50 @@
+/* Login/Register Auth Component Styles */
+
+.main-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  background: transparent;
+  width: 100%;
+}
+.left-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 40px;
+}
+.left-message h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: right;
+}
+.left-message .highlight {
+  color: #2563eb;
+}
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  padding: 32px 24px;
+  margin: 40px 0;
+}
+.nav-tabs .nav-link.active {
+  color: #2563eb !important;
+  border-color: #2563eb #fff #fff;
+}
+.form-check-input:checked {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+.btn-primary {
+  background-color: #2563eb;
+  border: none;
+}
+.btn-primary:hover {
+  background-color: #1746a2;
+}
