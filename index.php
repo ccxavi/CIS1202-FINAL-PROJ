@@ -229,7 +229,6 @@ if (isset($_POST['logout'])) {
         </div>
     </main>
     
- -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="./assets/js/userProfile.js"></script>
     <script src="./assets/js/changePassword.js"></script>

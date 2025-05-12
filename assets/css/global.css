@@ -6,6 +6,7 @@
   --powder-blue: #87a7e0;
   --white: #fff;
   --text-color: #333;
+  --sidebar-width: 415px;
 }
 
 * {
@@ -20,9 +21,10 @@ body {
   flex-direction: column;
   justify-content: space-between;
   padding: 1rem;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   color: var(--text-color);
+  overflow-x: hidden;
 }
 
 main {
@@ -34,6 +36,7 @@ main {
   padding: 2rem;
   /* overflow-y: auto; */
 }
+
 .main-container {
   margin: 40px 40px 0px;
   background: white;
@@ -44,3 +47,18 @@ main {
   display: flex;
   flex-direction: column;
 }
+
+/* Page with sidebar specific layout */
+body.with-sidebar {
+  overflow-y: hidden;
+  height: 100vh;
+}
+
+body.with-sidebar .main-container {
+  margin-left: var(--sidebar-width) !important;
+  width: calc(100% - var(--sidebar-width) - 40px) !important; 
+  overflow-y: auto;
+  height: calc(100vh - 40px);
+}
+
+/* Apply this class to community.php and other pages with sidebar */

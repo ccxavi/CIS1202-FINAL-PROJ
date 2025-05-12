@@ -37,8 +37,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       if (move_uploaded_file($fileTmp, $targetFile)) {
         try {
+            // Get the current profile picture before updating
+            $stmt = $pdo->prepare("SELECT profile_pic FROM users WHERE id = ?");
+            $stmt->execute([$userId]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            $previousPicPath = $user['profile_pic'] ?? '';
+            
+            // Update the user's profile_pic in the database
             $stmt = $pdo->prepare("UPDATE users SET profile_pic = ? WHERE id = ?");
             if ($stmt->execute([$targetPathForClient, $userId])){
+                // Delete previous profile picture if requested and if it's not the default picture
+                if (isset($_POST['deletePrevious']) && $_POST['deletePrevious'] === 'true' && 
+                    $previousPicPath && $previousPicPath !== './assets/photo/Profile_Pictures/default.jpg') {
+                    
+                    $previousPicFile = str_replace('./assets/photo/Profile_Pictures/', '../assets/photo/Profile_Pictures/', $previousPicPath);
+                    
+                    if (file_exists($previousPicFile) && is_file($previousPicFile)) {
+                        unlink($previousPicFile);
+                    }
+                }
+                
                 echo json_encode(['success' => true, 'message' => 'Profile picture updated successfully.', 'newProfilePicUrl' => $targetPathForClient]);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Database error: Failed to update profile picture path.']);

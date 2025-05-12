@@ -15,7 +15,7 @@ if(isAuthenticated()){
     $user = findUserByID($userID);
 
     
-    $profilePic = $user['profile_pic'] ?? './assets/photo/Profile_Pictures/default.jpg'; // fallback if null
+    $profilePic = $user['profile_pic'] ?? '../assets/photo/Profile_Pictures/default.jpg'; // Updated path
 }
 
 if (isset($_POST['logout'])) {
@@ -82,6 +82,8 @@ $results = $stmt->fetchAll();
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>searchResults</title>
+  <link rel="stylesheet" href="../assets/css/userProfile.css">
+
   <link rel="stylesheet" href="../assets/css/userDropdown.css">
   <link rel="stylesheet" href="../assets/css/sidebar.css">
   <link rel="stylesheet" href="../assets/css/global.css">
@@ -91,20 +93,31 @@ $results = $stmt->fetchAll();
   <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
-
+  <style>
+  .modal.show {
+    display: block!important;
+    background-color: rgba(0,0,0,0.5);
+  }
+  .modal-backdrop {
+    z-index: 1040!important;
+  }
+  .modal {
+    z-index: 1050!important;
+  }
+  </style>
 </head>
-<body>
+<body class="with-sidebar">
   <aside>
     <div class="logo">
       <img src="../assets/img/logo.png" alt="logo">
       <h2>Vero</h2>
     </div>
     <div class="links">
-      <a href="#">
+      <a href="../index.php">
         <div class="icon"><i class="fa fa-home fa-2x" aria-hidden="true"></i></div>
         <div class="home">Home</div>
       </a>
-      <a href="../index.php">
+      <a href="../views/searchResults.php" class="active">
         <div class="icon"><i class="fa fa-compass fa-2x" aria-hidden="true"></i></div>
         <div class="explore">Explore</div>
       </a>
@@ -116,7 +129,6 @@ $results = $stmt->fetchAll();
         <div class="icon"><i class="fa fa-folder fa-2x" aria-hidden="true"></i></div>
         <div class="collection">Collection</div>
       </a>
-      
       <a href='../views/community.php'>
         <div class="icon"><i class="fa fa-users fa-2x" aria-hidden="true"></i></div>
         <div class='community'>Community</div>
@@ -131,7 +143,7 @@ $results = $stmt->fetchAll();
           <button><i class="fa fa-search fa-lg" aria-hidden="true"></i>
           </button>
         </div>
-        <input name="query" type="text" placeholder="What are you searching today? We've got verified answers." />
+        <input name="query" type="text" placeholder="What are you searching today? We've got verified answers." value="<?php echo htmlspecialchars($_GET['query'] ?? ''); ?>" />
       </form>
       <div class="auth" id="auth">
         <?php
@@ -168,7 +180,7 @@ $results = $stmt->fetchAll();
                     </ul>
                 </div>';
             } else {
-                echo '<a href="../views/loginRegister.php">Login/Register</a>';
+                echo '<a href="./loginRegister.php">Login/Register</a>';
             }
         ?>
         </div>
@@ -178,44 +190,67 @@ $results = $stmt->fetchAll();
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="settingsModalLabel">Account Settings</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="document.getElementById('settingsModal').classList.remove('show'); document.querySelector('.modal-backdrop').remove();"></button>
                     </div>
                     <div class="modal-body">
-                        <!-- Profile Picture Section -->
+                        <div class="row">
+                            <!-- Sidebar Navigation -->
+                            <div class="col-md-7 col-lg-5">
+                                <ul class="nav nav-pills flex-column" id="settingsTab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active w-100 text-start" id="profile-pic-tab" data-bs-toggle="pill" data-bs-target="#profilePicContent" type="button" role="tab" aria-controls="profilePicContent" aria-selected="true"><i class="bi bi-person-circle me-2"></i>Profile Picture</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link w-100 text-start" id="account-info-tab" data-bs-toggle="pill" data-bs-target="#accountInfoContent" type="button" role="tab" aria-controls="accountInfoContent" aria-selected="false"><i class="bi bi-person-vcard me-2"></i>Account Details</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link w-100 text-start" id="password-tab" data-bs-toggle="pill" data-bs-target="#passwordContent" type="button" role="tab" aria-controls="passwordContent" aria-selected="false"><i class="bi bi-shield-lock me-2"></i>Change Password</button>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- Tab Content Area -->
+                            <div class="col-md-5 col-lg-7">
+                                <div class="tab-content" id="settingsTabContent">
+                                    <!-- Profile Picture Tab Content -->
+                                    <div class="tab-pane fade show active" id="profilePicContent" role="tabpanel" aria-labelledby="profile-pic-tab">
                         <div class="settings-section">
-                            <h6 class="settings-title">Profile Picture</h6>
-                            <div class="profile-pic-container">
-                                <img id="profilePicPreview" src=".<?php echo htmlspecialchars($profilePic); ?>" alt="Profile Picture" class="settings-profile-pic">
-                                <form id="profilePicForm" action="../controllers/changeUserInfo.php" method="POST" enctype="multipart/form-data">
+                                            <div class="profile-pic-container text-center mb-3">
+                                                <img src=".<?php echo htmlspecialchars($profilePic); ?>" alt="Profile Picture" class="settings-profile-pic img-thumbnail rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+                                            </div>
+                                            <form id="profilePicForm" enctype="multipart/form-data">
                                     <div class="mb-3">
-                                        <label for="profilePicUpload" class="form-label">Choose new image:</label>
-                                        <input class="form-control" type="file" id="profilePicUpload" name="profilePic" accept="image/*">
+                                                    <label for="profilePicUpload" class="form-label visually-hidden">Choose new image:</label>
+                                                    <input class="form-control form-control-sm" type="file" id="profilePicUpload" name="profilePic" accept="image/jpeg,image/png,image/gif">
                                     </div>
+                                                <div id="profilePicFeedback" class="form-text" style="min-height: 20px;"></div>
                                 </form>
                             </div>
                         </div>
 
-                        <hr>
-                        <!-- Account Information Section -->
+                                    <!-- Account Information Tab Content -->
+                                    <div class="tab-pane fade" id="accountInfoContent" role="tabpanel" aria-labelledby="account-info-tab">
                         <div class="settings-section">
                             <h6 class="settings-title">Account Information</h6>
-                            <form id="accountInfoForm" action="../controllers/changeUserInfo.php" method="POST">
+                                            <form id="accountInfoForm">
                                 <div class="mb-3">
-                                    <label for="username" class="form-label">Username</label>
-                                    <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($user['username'] ?? ''); ?>">
+                                                    <label for="usernameModal" class="form-label">Username</label>
+                                                    <input type="text" class="form-control" id="usernameModal" name="username" value="<?php echo htmlspecialchars($user['username'] ?? ''); ?>">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>">
+                                                    <label for="emailModal" class="form-label">Email</label>
+                                                    <input type="email" class="form-control" id="emailModal" name="email" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>">
                                 </div>
+                                                <div id="accountInfoFeedback" class="form-text" style="min-height: 20px;"></div>
                             </form>
                         </div>
-                        <hr>
-                        <!-- Change Password Section -->
+                                    </div>
+
+                                    <!-- Change Password Tab Content -->
+                                    <div class="tab-pane fade" id="passwordContent" role="tabpanel" aria-labelledby="password-tab">
                         <div class="settings-section">
                             <h6 class="settings-title">Change Password</h6>
-                            <div id="passwordFeedback" class="alert alert-danger d-none mb-3"></div>
-                            <form id="passwordForm" action="../controllers/changeUserInfo.php" method="POST">
+                                            <div id="passwordChangeFeedback" class="form-text" style="min-height: 20px;"></div>
+                                            <form id="passwordForm">
                             <div class="mb-3">
                                     <label for="currentPassword" class="form-label">Current Password</label>
                                     <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
@@ -230,112 +265,180 @@ $results = $stmt->fetchAll();
                                     <div class="form-text text-danger" id="passwordMatchError"></div>
                                 </div>
                             </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="document.getElementById('settingsModal').classList.remove('show'); document.querySelector('.modal-backdrop').remove();">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveSettingsBtn" onclick="setTimeout(function() { document.getElementById('settingsModal').classList.remove('show'); document.querySelector('.modal-backdrop').remove(); }, 300);">Save Changes</button>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <section class="content">
-      <h2> Results for "<?php echo $search ?>" <span> </span></h2>
-      
-      <form class="sort-by" method="GET" action="searchResults.php">
+
+    <?php
+  if ($search) {
+?>
+  <section class="content">
+    <h2>Results for "<?php echo htmlspecialchars($search); ?>" <span></span></h2>
+
+    <form class="sort-by" method="GET" action="searchResults.php">
       <input type="hidden" name="query" value="<?php echo htmlspecialchars($_GET['query'] ?? ''); ?>">
 
-        <strong>Sort by:</strong>
+      <strong>Sort by:</strong>
 
-        <select name="topic" id="topic">
-          <option value="">Topic</option>
-          <option>Artificial Intelligence</option>
-          <option>Cybersecurity</option>
-          <option>Computer Networks</option>
-          <option>Data Science</option>
-          <option>Blockchain</option>
-          <option>Computer Vision</option>
-          <option>Natural Language Processing</option>
-          <option>Human-Computer Interaction</option>
-          <option>Cloud Computing</option>
-          <option>High Energy Astrophysical Phenomena</option>
-        </select>
+      <select name="topic" id="topic">
+        <option value="">Topic</option>
+        <option>Artificial Intelligence</option>
+        <option>Cybersecurity</option>
+        <option>Computer Networks</option>
+        <option>Data Science</option>
+        <option>Blockchain</option>
+        <option>Computer Vision</option>
+        <option>Natural Language Processing</option>
+        <option>Human-Computer Interaction</option>
+        <option>Cloud Computing</option>
+        <option>High Energy Astrophysical Phenomena</option>
+      </select>
 
-        <select name="source_type" id="source_type">
-          <option value="">Source Type</option>
-          <option>Conference Paper</option>
-          <option>Journal Article</option>
-          <option>Preprint</option>
-          <option>Thesis</option>
-          <option>Technical Report</option>
-          <option>White Paper</option>
-          <option>Book Chapter</option>
-          <option>Dissertation</option>
-        </select>
+      <select name="source_type" id="source_type">
+        <option value="">Source Type</option>
+        <option>Conference Paper</option>
+        <option>Journal Article</option>
+        <option>Preprint</option>
+        <option>Thesis</option>
+        <option>Technical Report</option>
+        <option>White Paper</option>
+        <option>Book Chapter</option>
+        <option>Dissertation</option>
+      </select>
 
-        <select name="credibility" id="credibility">
-          <option value="">Credibility</option>
-          <option>Peer-reviewed</option>
-          <option>Non-peer-reviewed</option>
-          <option>High Impact</option>
-          <option>Unverified</option>
-        </select>
+      <select name="credibility" id="credibility">
+        <option value="">Credibility</option>
+        <option>Peer-reviewed</option>
+        <option>Non-peer-reviewed</option>
+        <option>High Impact</option>
+        <option>Unverified</option>
+      </select>
 
-        <select name="region" id="region">
-          <option value="">Region</option>
-          <option>Global</option>
-          <option>International</option>
-          <option>Asia</option>
-          <option>Europe</option>
-          <option>North America</option>
-          <option>South America</option>
-          <option>Africa</option>
-          <option>Australia</option>
-        </select>
+      <select name="region" id="region">
+        <option value="">Region</option>
+        <option>Global</option>
+        <option>International</option>
+        <option>Asia</option>
+        <option>Europe</option>
+        <option>North America</option>
+        <option>South America</option>
+        <option>Africa</option>
+        <option>Australia</option>
+      </select>
 
-        <select name="date" id="date">
-          <option value="">Date</option>
-          <?php
-            $currentYear = date('Y');
-            for ($year = $currentYear; $year >= 2010; $year--) {
-                echo "<option>$year</option>";
-            }
-          ?>
-        </select>
+      <select name="date" id="date">
+        <option value="">Date</option>
+        <?php
+          $currentYear = date('Y');
+          for ($year = $currentYear; $year >= 2010; $year--) {
+              echo "<option>$year</option>";
+          }
+        ?>
+      </select>
 
-        <!-- Submit button -->
-        <button type="submit">Apply Filters</button>
-      </form>
-            
-      <?php if (!empty($results)): ?>
-        <?php foreach ($results as $article): ?>
-            <a href="<?= htmlspecialchars($article['article_link']) ?>" class="paper" target="_blank">
-                <article class="paper">
-                  <div class="paper-info">
-                      <h3><?= htmlspecialchars($article['title']) ?></h3>
-                      <p>Author: <?= htmlspecialchars($article['author']) ?></p>
-                      <p class="year">Date: <?= date('F j, Y', strtotime($article['published_date'])) ?></p>
-                  </div>
-                  <div class="paper-buttons">
-                      <button>121<i class="fa fa-eye" aria-hidden="true"></i></button>
-                      <button>
-                      <i class="fa fa-bookmark" aria-hidden="true"></i>
+      <button type="submit">Apply Filters</button>
+    </form>
 
-                      </button>
-                  </div>
-                </article>
-            </a>
-        <?php endforeach; ?>
+    <?php if (!empty($results)): ?>
+      <?php foreach ($results as $article): ?>
+        <div class="paper">
+          <article>
+            <div class="paper-info">
+              <h3><?= htmlspecialchars($article['title']) ?></h3>
+              <p>Author: <?= htmlspecialchars($article['author']) ?></p>
+              <p class="year">Date: <?= date('F j, Y', strtotime($article['published_date'])) ?></p>
+              <a href="<?= htmlspecialchars($article['article_link']) ?>" target="_blank" class="article-link">Read Article</a>
+            </div>
+            <div class="bookmark-container" data-article-id="<?= htmlspecialchars($article['id']) ?>">
+              <i class="fa fa-bookmark bookmark-icon" aria-hidden="true"></i>
+              <div class="collections-dropdown">
+                <div class="dropdown-header">Add to Collection</div>
+                <div class="collections-list">
+                  <?php
+                    // Fetch user's collections
+                    if(isAuthenticated()) {
+                      $collectionsStmt = $pdo->prepare("SELECT id, name FROM collections WHERE user_id = ?");
+                      $collectionsStmt->execute([$_SESSION['userID']]);
+                      $collections = $collectionsStmt->fetchAll();
+                      
+                      if(empty($collections)) {
+                        echo '<div class="no-collections">No collections found</div>';
+                      } else {
+                        foreach($collections as $collection) {
+                          echo '<div class="collection-item" data-collection-id="' . htmlspecialchars($collection['id']) . '">';
+                          echo htmlspecialchars($collection['name']);
+                          echo '</div>';
+                        }
+                      }
+                    } else {
+                      echo '<div class="login-prompt">Please login to bookmark</div>';
+                    }
+                  ?>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      <?php endforeach; ?>
     <?php else: ?>
       <p>No results found for "<?= htmlspecialchars($search) ?>".</p>
     <?php endif; ?>
-    </section>
+  </section>
+<?php
+  } // end if ($search)
+?>
+
+    
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
   <script src="../assets/js/userProfile.js"></script>
   <script src="../assets/js/changePassword.js"></script>
   <script src="../assets/js/changeUserInfo.js"></script>
+  <script src="../assets/js/bookmark.js"></script>
+  <script src="../assets/js/collection.js"></script>
+  <script src="../assets/js/modalInit.js"></script>
+  <script>
+  // Additional script to ensure settings modal works properly
+  document.addEventListener('DOMContentLoaded', function() {
+    // Direct handler for settings button
+    const settingsButton = document.querySelector('[data-bs-target="#settingsModal"]');
+    if (settingsButton) {
+      settingsButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        const modal = document.getElementById('settingsModal');
+        if (modal && typeof bootstrap !== 'undefined') {
+          const bsModal = new bootstrap.Modal(modal);
+          bsModal.show();
+        }
+        return false;
+      });
+    }
     
+    // Direct handler for close buttons
+    const closeButtons = document.querySelectorAll('[data-bs-dismiss="modal"]');
+    closeButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const modal = document.getElementById('settingsModal');
+        if (modal && typeof bootstrap !== 'undefined') {
+          const bsModal = bootstrap.Modal.getInstance(modal);
+          if (bsModal) bsModal.hide();
+        }
+      });
+    });
+  });
+  </script>
 </body>
 </html>
