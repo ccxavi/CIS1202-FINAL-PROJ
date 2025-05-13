@@ -290,7 +290,7 @@ if (isset($_POST['logout'])) {
                     ?>
                         <div class="comment" id="comment-<?php echo $comment['id']; ?>">
                             <div class="comment-header">
-                                <img src="<?php echo htmlspecialchars($comment['profile_pic']); ?>" alt="Profile" class="comment-profile-pic">
+                                <img src=".<?php echo htmlspecialchars($comment['profile_pic']); ?>" alt="Profile" class="comment-profile-pic">
                                 <div class="comment-meta">
                                     <div class="comment-author-time">
                                         <span class="comment-author"><?php echo htmlspecialchars($comment['username']); ?></span>
@@ -334,7 +334,7 @@ if (isset($_POST['logout'])) {
                                 ?>
                                     <div class="reply">
                                         <div class="comment-header">
-                                            <img src="<?php echo htmlspecialchars($reply['profile_pic']); ?>" alt="Profile" class="comment-profile-pic">
+                                            <img src=".<?php echo htmlspecialchars($reply['profile_pic']); ?>" alt="Profile" class="comment-profile-pic">
                                             <div class="comment-meta">
                                                 <div class="comment-author-time">
                                                     <span class="comment-author"><?php echo htmlspecialchars($reply['username']); ?></span>

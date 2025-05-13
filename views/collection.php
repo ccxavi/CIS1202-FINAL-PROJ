@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 require_once __DIR__ . '/../config/databaseConnection.php';
@@ -248,6 +247,17 @@ if (isset($_POST['logout'])) {
         <i>Bookmarked</i>
         <span class="count" id="bookmarks-count">(0)</span>
       </div>
+      
+      <!-- Collection Name Header -->
+      <div class="collection-header no-collection">
+        <div class="collection-header-name">
+          <h2 id="current-collection-name">No collection selected</h2>
+          <button id="edit-collection-name" class="edit-name-btn">
+            <i class="fa fa-pencil"></i>
+          </button>
+        </div>
+      </div>
+      
       <div class="bookmarks-container">
         <div class="no-selection-message">Select a collection to view bookmarks</div>
       </div>
@@ -279,35 +289,13 @@ if (isset($_POST['logout'])) {
   </section>
 </div>
 
-<!-- Rename Collection Modal -->
-<div class="modal fade" id="renameCollectionModal" tabindex="-1" aria-labelledby="renameCollectionModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="renameCollectionModalLabel">Rename Collection</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="settings-section">
-          <div class="mb-4 text-center">
-            <img src="../assets/img/folder.png" alt="Collection" style="width: 100px; height: auto;">
-          </div>
-          <form id="renameCollectionForm">
-            <div class="mb-3">
-              <label for="newCollectionName" class="form-label">Collection Name</label>
-              <input type="text" class="form-control" id="newCollectionName" name="newCollectionName" placeholder="Enter new name">
-              <input type="hidden" id="currentCollectionId">
-              <div id="collectionNameFeedback" class="form-text" style="min-height: 20px;"></div>
-            </div>
-          </form>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="saveNewName">Save changes</button>
-      </div>
-    </div>
-  </div>
+<!-- Context Menu for Collections -->
+<div id="collection-context-menu" class="context-menu" style="display: none;">
+  <ul>
+    <li id="rename-collection">
+      <i class="fa fa-pencil"></i> Rename
+    </li>
+  </ul>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous"></script>
@@ -320,6 +308,99 @@ if (isset($_POST['logout'])) {
 // Add direct click event listeners to fix the selection issue
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Fixing project click issue');
+    
+    // Context menu variables
+    let activeCollectionId = null;
+    let activeCollectionName = null;
+    const contextMenu = document.getElementById('collection-context-menu');
+    
+    // Handle right-click on collection names
+    document.querySelectorAll('.collection-name').forEach(nameElement => {
+        nameElement.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            
+            // Store the collection info
+            activeCollectionId = this.dataset.collectionId;
+            activeCollectionName = this.textContent.trim();
+            
+            // Position and show context menu
+            contextMenu.style.left = e.pageX + 'px';
+            contextMenu.style.top = e.pageY + 'px';
+            contextMenu.style.display = 'block';
+        });
+    });
+    
+    // Hide context menu when clicking elsewhere
+    document.addEventListener('click', function() {
+        contextMenu.style.display = 'none';
+    });
+    
+    // Handle rename option click
+    document.getElementById('rename-collection').addEventListener('click', function() {
+        if (activeCollectionId) {
+            const newName = prompt('Enter a new name for this collection:', activeCollectionName);
+            
+            if (newName !== null && newName.trim() !== '') {
+                renameCollection(activeCollectionId, newName.trim());
+            }
+        }
+    });
+    
+    // Function to rename collection
+    function renameCollection(collectionId, newName) {
+        fetch('../controllers/updateCollection.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `collection_id=${collectionId}&new_name=${encodeURIComponent(newName)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update collection name in DOM
+                document.querySelectorAll(`.collection-name[data-collection-id="${collectionId}"]`).forEach(el => {
+                    el.textContent = newName;
+                });
+                
+                // Update the collection name in the header if it's the currently selected collection
+                const currentCollectionHeader = document.getElementById('current-collection-name');
+                if (currentCollectionHeader && currentCollectionHeader.dataset.collectionId === collectionId) {
+                    currentCollectionHeader.textContent = newName;
+                }
+                
+                alert('Collection renamed successfully');
+            } else {
+                alert('Failed to rename collection: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    }
+    
+    // Handle edit collection name button
+    const editNameBtn = document.getElementById('edit-collection-name');
+    if (editNameBtn) {
+        editNameBtn.addEventListener('click', function() {
+            const currentNameElement = document.getElementById('current-collection-name');
+            const collectionId = currentNameElement.dataset.collectionId;
+            
+            if (!collectionId) {
+                alert('Please select a collection first');
+                return;
+            }
+            
+            const currentName = currentNameElement.textContent;
+            const newName = prompt('Enter a new name for this collection:', currentName);
+            
+            if (newName !== null && newName.trim() !== '') {
+                renameCollection(collectionId, newName.trim());
+            }
+        });
+    }
+    
     document.querySelectorAll('.project').forEach(project => {
         project.onclick = function(e) {
             if (e.target.closest('.collection-name')) return;
@@ -350,6 +431,23 @@ document.addEventListener('DOMContentLoaded', function() {
             const collectionId = this.dataset.collectionId;
             if (this.classList.contains('selected')) {
                 console.log('Loading bookmarks for', collectionId);
+                
+                // Update the collection name in the header
+                const collectionNameElement = this.querySelector('.collection-name');
+                if (collectionNameElement) {
+                    const currentCollectionHeader = document.getElementById('current-collection-name');
+                    const collectionHeader = document.querySelector('.collection-header');
+                    
+                    if (currentCollectionHeader) {
+                        currentCollectionHeader.textContent = collectionNameElement.textContent;
+                        currentCollectionHeader.dataset.collectionId = collectionId;
+                    }
+                    
+                    if (collectionHeader) {
+                        collectionHeader.classList.remove('no-collection');
+                    }
+                }
+                
                 if (window.loadBookmarks) {
                     window.loadBookmarks(collectionId);
                 } else {
@@ -357,6 +455,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             } else {
                 console.log('Clearing bookmarks');
+                
+                // Reset the collection name in the header
+                const currentCollectionHeader = document.getElementById('current-collection-name');
+                const collectionHeader = document.querySelector('.collection-header');
+                
+                if (currentCollectionHeader) {
+                    currentCollectionHeader.textContent = 'No collection selected';
+                    delete currentCollectionHeader.dataset.collectionId;
+                }
+                
+                if (collectionHeader) {
+                    collectionHeader.classList.add('no-collection');
+                }
+                
                 if (window.clearBookmarks) {
                     window.clearBookmarks();
                 } else {
@@ -439,6 +551,12 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('bookmarks-count').textContent = '(0)';
     }
 });
+
+// Expose functions to window object
+window.updateDeleteButtonState = updateDeleteButtonState;
+window.updateDeleteBookmarkState = updateDeleteBookmarkState;
+window.loadBookmarks = loadBookmarks;
+window.clearBookmarks = clearBookmarks;
 </script>
 <script src="../assets/js/collection.js"></script>
 <script src="../assets/js/modalInit.js"></script>

@@ -29,24 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Delete Bookmark button
     document.getElementById('deleteBookmark').addEventListener('click', deleteSelectedBookmarks);
 
-    // Save new name button in modal
-    document.getElementById('saveNewName').addEventListener('click', saveCollectionName);
-
-    // Handle Enter key in modal
-    document.getElementById('newCollectionName').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            saveCollectionName();
-        }
-    });
-
-    // Handle modal feedback clearing
-    const renameModal = document.getElementById('renameCollectionModal');
-    renameModal.addEventListener('hidden.bs.modal', function () {
-        document.getElementById('collectionNameFeedback').textContent = '';
-        document.getElementById('collectionNameFeedback').className = 'form-text';
-    });
-
     // Add handlers for bookmark selection
     document.addEventListener('click', function(e) {
         const bookmarkItem = e.target.closest('.bookmark-item');
@@ -113,6 +95,25 @@ function loadBookmarks(collectionId) {
     // Reset selected bookmarks
     window.selectedBookmarks = [];
     updateDeleteBookmarkState();
+
+    // Update collection name in header if it exists
+    const selectedProject = document.querySelector(`.project[data-collection-id="${collectionId}"]`);
+    if (selectedProject) {
+        const collectionNameElement = selectedProject.querySelector('.collection-name');
+        if (collectionNameElement) {
+            const currentCollectionHeader = document.getElementById('current-collection-name');
+            const collectionHeader = document.querySelector('.collection-header');
+            
+            if (currentCollectionHeader) {
+                currentCollectionHeader.textContent = collectionNameElement.textContent;
+                currentCollectionHeader.dataset.collectionId = collectionId;
+            }
+            
+            if (collectionHeader) {
+                collectionHeader.classList.remove('no-collection');
+            }
+        }
+    }
 
     fetch(`../controllers/getCollectionBookmarks.php?collection_id=${collectionId}`)
         .then(response => response.json())
@@ -238,11 +239,36 @@ function clearBookmarks() {
     // Reset selected bookmarks
     window.selectedBookmarks = [];
     updateDeleteBookmarkState();
+    
+    // Reset the collection name in the header
+    const currentCollectionHeader = document.getElementById('current-collection-name');
+    const collectionHeader = document.querySelector('.collection-header');
+    
+    if (currentCollectionHeader) {
+        currentCollectionHeader.textContent = 'No collection selected';
+        delete currentCollectionHeader.dataset.collectionId;
+    }
+    
+    if (collectionHeader) {
+        collectionHeader.classList.add('no-collection');
+    }
 }
 
 function createNewCollection() {
+    // Prompt user for collection name
+    const collectionName = prompt("Enter a name for your new collection:", "New Collection");
+    
+    // If user cancels the prompt or enters empty string, abort
+    if (collectionName === null || collectionName.trim() === "") {
+        return;
+    }
+
     fetch('../controllers/createCollection.php', {
-        method: 'POST'
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `name=${encodeURIComponent(collectionName.trim())}`
     })
     .then(response => response.json())
     .then(data => {
@@ -293,34 +319,27 @@ function createNewCollection() {
                     clearBookmarks();
                 }
             });
-
-            // Add double-click handler for collection names
-            const nonClickedName = newProject.querySelector('.non-clicked .collection-name');
-            const clickedName = newProject.querySelector('.clicked .collection-name');
             
-            function handleDoubleClick(e) {
-                e.stopPropagation();
-                e.preventDefault();
-                
-                const projectDiv = this.closest('.project');
-                const isProjectSelected = projectDiv.classList.contains('selected');
-                const isInClickedState = this.closest('.clicked') !== null;
-                const isInNonClickedState = this.closest('.non-clicked') !== null;
-                
-                if ((isProjectSelected && isInClickedState) || (!isProjectSelected && isInNonClickedState)) {
-                    const collectionId = this.dataset.collectionId;
-                    const currentName = this.textContent.trim();
+            // Add context menu event listeners to the new collection names
+            const collectionNames = newProject.querySelectorAll('.collection-name');
+            collectionNames.forEach(nameElement => {
+                nameElement.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
                     
-                    document.getElementById('currentCollectionId').value = collectionId;
-                    document.getElementById('newCollectionName').value = currentName;
+                    // Get context menu
+                    const contextMenu = document.getElementById('collection-context-menu');
+                    if (!contextMenu) return;
                     
-                    const renameModal = new bootstrap.Modal(document.getElementById('renameCollectionModal'));
-                    renameModal.show();
-                }
-            }
-            
-            nonClickedName.addEventListener('dblclick', handleDoubleClick);
-            clickedName.addEventListener('dblclick', handleDoubleClick);
+                    // Store the collection info in global variables or dataset
+                    window.activeCollectionId = this.dataset.collectionId;
+                    window.activeCollectionName = this.textContent.trim();
+                    
+                    // Position and show context menu
+                    contextMenu.style.left = e.pageX + 'px';
+                    contextMenu.style.top = e.pageY + 'px';
+                    contextMenu.style.display = 'block';
+                });
+            });
 
             projectSection.appendChild(newProject);
             
@@ -376,48 +395,6 @@ function deleteSelectedProjects() {
     .catch(error => {
         console.error('Error:', error);
         showError('Failed to delete collection');
-    });
-}
-
-function saveCollectionName() {
-    const collectionId = document.getElementById('currentCollectionId').value;
-    const newName = document.getElementById('newCollectionName').value.trim();
-    const feedback = document.getElementById('collectionNameFeedback');
-    
-    if (!newName) {
-        feedback.textContent = 'Collection name cannot be empty';
-        feedback.className = 'form-text text-danger';
-        return;
-    }
-    
-    fetch('../controllers/updateCollection.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `collection_id=${collectionId}&new_name=${encodeURIComponent(newName)}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Update collection name in DOM
-            document.querySelectorAll(`.collection-name[data-collection-id="${collectionId}"]`).forEach(el => {
-                el.textContent = newName;
-            });
-            
-            // Hide modal using Bootstrap
-            bootstrap.Modal.getInstance(document.getElementById('renameCollectionModal')).hide();
-            
-            showSuccess('Collection renamed successfully');
-        } else {
-            feedback.textContent = 'Failed to rename collection: ' + data.message;
-            feedback.className = 'form-text text-danger';
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        feedback.textContent = 'An error occurred. Please try again.';
-        feedback.className = 'form-text text-danger';
     });
 }
 

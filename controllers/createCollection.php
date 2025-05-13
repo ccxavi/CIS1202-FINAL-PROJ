@@ -10,13 +10,13 @@ if (!isset($_SESSION['userID'])) {
 }
 
 $userID = $_SESSION['userID'];
-$defaultName = "untitled";
+$collectionName = isset($_POST['name']) && !empty($_POST['name']) ? trim($_POST['name']) : "untitled";
 
 try {
     // Insert the new collection into the database
     $stmt = $pdo->prepare("INSERT INTO collections (user_id, name) VALUES (:user_id, :name)");
     $stmt->bindParam(':user_id', $userID);
-    $stmt->bindParam(':name', $defaultName);
+    $stmt->bindParam(':name', $collectionName);
 
     if ($stmt->execute()) {
         $newId = $pdo->lastInsertId();
@@ -25,7 +25,7 @@ try {
             'message' => 'Collection created successfully',
             'collection' => [
                 'id' => $newId,
-                'name' => $defaultName
+                'name' => $collectionName
             ]
         ]);
     } else {

@@ -126,15 +126,21 @@ $results = $stmt->fetchAll();
         <div class="icon"><i class="fa fa-address-book fa-2x" aria-hidden="true"></i></div>
         <div class='guide'>Guide</div>
       </a>
+      <?php
+	if (isAuthenticated()) {
+                echo '
       <a href="../views/collection.php">
         <div class="icon"><i class="fa fa-folder fa-2x" aria-hidden="true"></i></div>
         <div class="collection">Collection</div>
       </a>
-      <a href='../views/community.php'>
+      <a href="../views/community.php">
         <div class="icon"><i class="fa fa-users fa-2x" aria-hidden="true"></i></div>
-        <div class='community'>Community</div>
-      </a>
-    </div>
+        <div class="community">Community</div>
+      </a> ';
+}
+
+?>
+
   </aside>
   
   <div class="main-container">

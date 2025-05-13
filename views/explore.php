@@ -222,39 +222,30 @@ if (isset($_POST['logout'])) {
                 <div class="trending-layout">
                     <div class="trending-item-container">
                         <div class="trending-item">
-                        <button><i class="bi bi-eye"></i></button>
                         <div class="title">The Impact of Climate Change on Marine Biodiversity</div>
                     </div>
                     <div class="trending-item">
-                        <button><i class="bi bi-eye"></i></button>
                         <div class="title">Artificial Intelligence in Modern Medical Diagnostics</div>
                     </div>
                     <div class="trending-item">
-                        <button><i class="bi bi-eye"></i></button>
                         <div class="title">The Role of Nanotechnology in Cancer Treatment</div>
                     </div>
                     <div class="trending-item">
-                        <button><i class="bi bi-eye"></i></button>
                         <div class="title">Renewable Energy Solutions for Developing Nations</div>
                     </div>
                     <div class="trending-item">
-                        <button><i class="bi bi-eye"></i></button>
                         <div class="title">Exploring Genetic Editing Using CRISPR Technology</div>
                     </div>
                     <div class="trending-item">
-                        <button><i class="bi bi-eye"></i></button>
                         <div class="title">The Effects of Social Media on Adolescent Psychology</div>
                     </div>
                     <div class="trending-item">
-                        <button><i class="bi bi-eye"></i></button>
                         <div class="title">Quantum Computing: The Next Frontier in Data Security</div>
                     </div>
                     <div class="trending-item">
-                        <button><i class="bi bi-eye"></i></button>
                         <div class="title">Urban Farming as a Sustainable Food Source</div>
                     </div>
                     <div class="trending-item">
-                        <button><i class="bi bi-eye"></i></button>
                         <div class="title">Language Models and Their Role in Education Reform</div>
                     </div>
                     </div>
