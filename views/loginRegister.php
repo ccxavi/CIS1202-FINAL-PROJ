@@ -103,6 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login/Register</title>
+    <link rel="icon" type="image/png" href="../assets/img/logo.png">
     <link rel="stylesheet" href="../assets/css/global.css">
     <link rel="stylesheet" href="../assets/css/explore-auth.css">
     <link rel="stylesheet" href="../assets/css/header.css">
@@ -153,8 +154,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <label for="email" class="form-label">Email</label>
                                 <input type="email" class="form-control" id="email" name="email" required>
                                 <?php if ($login_email_error): ?>
-                                    <div class="validation-feedback">
-                                        <i class="bi bi-exclamation-triangle-fill"></i>
+                                    <div class="validation-feedback <?php echo $login_email_error['type']; ?>">
+                                        <i class="bi <?php echo $login_email_error['type'] === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'; ?>"></i>
                                         <?php echo htmlspecialchars($login_email_error['message']); ?>
                                     </div>
                                 <?php endif; ?>
@@ -168,8 +169,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </button>
                                 </div>
                                 <?php if ($login_password_error): ?>
-                                    <div class="validation-feedback">
-                                        <i class="bi bi-exclamation-triangle-fill"></i>
+                                    <div class="validation-feedback <?php echo $login_password_error['type']; ?>">
+                                        <i class="bi <?php echo $login_password_error['type'] === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'; ?>"></i>
                                         <?php echo htmlspecialchars($login_password_error['message']); ?>
                                     </div>
                                 <?php endif; ?>
@@ -183,8 +184,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <label for="userNameInput" class="form-label">User Name</label>
                                 <input type="text" class="form-control" id="userNameInput" name="userNameInput" required>
                                 <?php if ($register_username_error): ?>
-                                    <div class="validation-feedback">
-                                        <i class="bi bi-exclamation-triangle-fill"></i>
+                                    <div class="validation-feedback <?php echo $register_username_error['type']; ?>">
+                                        <i class="bi <?php echo $register_username_error['type'] === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'; ?>"></i>
                                         <?php echo htmlspecialchars($register_username_error['message']); ?>
                                     </div>
                                 <?php endif; ?>
@@ -193,8 +194,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <label for="registerEmail" class="form-label">Email</label>
                                 <input type="email" class="form-control" id="registerEmail" name="email" required>
                                 <?php if ($register_email_error): ?>
-                                    <div class="validation-feedback">
-                                        <i class="bi bi-exclamation-triangle-fill"></i>
+                                    <div class="validation-feedback <?php echo $register_email_error['type']; ?>">
+                                        <i class="bi <?php echo $register_email_error['type'] === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'; ?>"></i>
                                         <?php echo htmlspecialchars($register_email_error['message']); ?>
                                     </div>
                                 <?php endif; ?>

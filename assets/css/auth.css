@@ -166,11 +166,18 @@
 /* Custom validation feedback */
 .validation-feedback {
   font-size: 0.85rem;
-  color: #dc3545;
   margin-top: 5px;
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+.validation-feedback.danger {
+  color: #dc3545;
+}
+
+.validation-feedback.success {
+  color: #198754;
 }
 
 .validation-feedback i {

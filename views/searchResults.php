@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 
@@ -83,6 +82,7 @@ $results = $stmt->fetchAll();
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>searchResults</title>
+  <link rel="icon" type="image/png" href="../assets/img/logo.png">
   <link rel="stylesheet" href="../assets/css/userProfile.css">
 
   <link rel="stylesheet" href="../assets/css/userDropdown.css">

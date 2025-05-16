@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 require_once __DIR__ . '/../config/databaseConnection.php';
@@ -32,6 +31,7 @@ if (isset($_POST['logout'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Community</title>
+    <link rel="icon" type="image/png" href="../assets/img/logo.png">
     <link rel="stylesheet" href="../assets/css/userProfile.css">
 
     <link rel="stylesheet" href="../assets/css/userDropdown.css">

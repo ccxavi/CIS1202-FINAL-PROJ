@@ -7,7 +7,16 @@ require_once __DIR__ . '/controllers/userAuthHandler.php';
 if(isAuthenticated()){
     $userID = $_SESSION['userID'];
     $user = findUserByID($userID);
-    $profilePic = $user['profile_pic'] ?? './assets/photo/Profile_Pictures/default.jpg'; // fallback if null
+    
+    if ($user === false) {
+        // If user data can't be found, log them out
+        session_unset();
+        session_destroy();
+        header('Location: ./views/loginRegister.php');
+        exit();
+    }
+    
+    $profilePic = $user['profile_pic'] ?? './assets/photo/Profile_Pictures/default.jpg';
 }
 
 if (isset($_POST['logout'])) {
@@ -22,6 +31,7 @@ if (isset($_POST['logout'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vero - Verified Research</title>
+    <link rel="icon" type="image/png" href="./assets/img/logo.png">
     <link rel="stylesheet" href="./assets/css/global.css">
     <link rel="stylesheet" href="./assets/css/home.css">
     <link rel="stylesheet" href="./assets/css/userProfile.css">
@@ -247,7 +257,7 @@ if (isset($_POST['logout'])) {
                         </div>
                         
                         <div class="team-member">
-                            <img src="./assets/img/Cañete.png" alt="Emman Cañete" class="member-avatar">
+                            <img src="./assets/img/Canete.png" alt="Emman Cañete" class="member-avatar">
                             <h3 class="member-name">Emman</h3>
                             <p class="member-role">Full Stack Developer</p>
                         </div>
@@ -255,7 +265,7 @@ if (isset($_POST['logout'])) {
                     
                     <div class="team-row bottom-row">
                         <div class="team-member">
-                            <img src="./assets/img/Miñoza.png" alt="Jared Miñoza" class="member-avatar">
+                            <img src="./assets/img/Minoza.png" alt="Jared Miñoza" class="member-avatar">
                             <h3 class="member-name">Jared</h3>
                             <p class="member-role">Backend Developer</p>
                         </div>
