@@ -1,0 +1,64 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+:root {
+  --poppins: "Poppins", sans-serif;
+  --azure-blue: #1e68e3;
+  --powder-blue: #87a7e0;
+  --white: #fff;
+  --text-color: #333;
+  --sidebar-width: 415px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--poppins);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  height: 100vh;
+  width: 100vw;
+  color: var(--text-color);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.main-container {
+  margin: 40px 40px 0px;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 10px 20px rgb(0 0 0 / 0.1);
+  width: 100%;
+  max-width: 1487px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Page with sidebar specific layout */
+body.with-sidebar {
+  overflow-y: hidden;
+  height: 100vh;
+}
+
+body.with-sidebar .main-container {
+  margin-left: var(--sidebar-width) !important;
+  width: calc(100% - var(--sidebar-width) - 40px) !important; 
+  overflow-y: auto;
+  height: calc(100vh - 40px);
+}
+
+/* Apply this class to community.php and other pages with sidebar */
