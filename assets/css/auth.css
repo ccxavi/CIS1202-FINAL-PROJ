@@ -183,3 +183,69 @@
 .validation-feedback i {
   font-size: 0.9rem;
 }
+
+/* Forgot Password Modal Styles */
+.reset-guide {
+    padding: 1rem 0;
+}
+
+.shield-icon {
+    font-size: 3rem;
+    color: var(--azure-blue);
+    margin-bottom: 1rem;
+}
+
+.reset-guide h4 {
+    color: #1e293b;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.reset-guide p {
+    margin-bottom: 1rem;
+    color: #64748b;
+}
+
+.guide-steps {
+    text-align: left;
+    background-color: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-top: 1.5rem;
+}
+
+.guide-steps p {
+    color: #334155;
+    font-weight: 500;
+}
+
+.reset-guide ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.reset-guide ul {
+    padding-left: 1.5rem;
+    margin: 0.5rem 0;
+}
+
+.reset-guide li {
+    margin-bottom: 0.5rem;
+    color: #475569;
+}
+
+.reset-guide a {
+    color: var(--azure-blue);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.reset-guide a:hover {
+    text-decoration: underline;
+}
+
+.modal-footer .btn-primary {
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+}
+
