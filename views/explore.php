@@ -7,8 +7,13 @@ require_once __DIR__ . '/../controllers/userAuthHandler.php';
 if(isAuthenticated()){
     $userID = $_SESSION['userID'];
     $user = findUserByID($userID);
-
-    $profilePic = $user['profile_pic'] ?? './assets/photo/Profile_Pictures/default.jpg'; // Updated path
+    
+    // Update path handling for profile picture
+    if (!empty($user['profile_pic'])) {
+        $profilePic = str_replace('./assets/', '../assets/', $user['profile_pic']);
+    } else {
+        $profilePic = '../assets/photo/Profile_Pictures/default.jpg';
+    }
 }
 
 if (isset($_POST['logout'])) {
@@ -28,6 +33,7 @@ if (isset($_POST['logout'])) {
     <link rel="stylesheet" href="../assets/css/explore-auth.css">
 
     <link rel="stylesheet" href="../assets/css/userProfile.css">
+    <link rel="stylesheet" href="../assets/css/settings.css">
     <link rel="stylesheet" href="../assets/css/header.css">
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
@@ -75,7 +81,7 @@ if (isset($_POST['logout'])) {
                 echo '
                 <div class="user-dropdown-container">
                     <div class="user-dropdown-toggle">
-                <img src=".' . htmlspecialchars($profilePic) . '" alt="Profile">
+                        <img src="' . htmlspecialchars($profilePic) . '" alt="Profile">
                         <div class="user-info">
                             <div class="username">' . htmlspecialchars($user['username']) . '</div>
                             <div class="user-role">' . htmlspecialchars($user['email']) . '</div>
@@ -85,13 +91,12 @@ if (isset($_POST['logout'])) {
 
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li class="dropdown-section text-center">
-
-                            <img src=".' . htmlspecialchars($profilePic) . '" alt="Profile Picture" class="settings-profile-pic" style="width: 64px; height: 64px; margin-bottom: 8px;">
+                            <img src="' . htmlspecialchars($profilePic) . '" alt="Profile Picture" class="settings-profile-pic" style="width: 64px; height: 64px; margin-bottom: 8px;">
                             <div><strong>' . htmlspecialchars($user['username']) . '</strong></div>
                             <div class="user-email">' . htmlspecialchars($user['email']) . '</div>
                         </li>
                         <li class="dropdown-item-wrapper">
-                            <a href="profile.php" class="dropdown-item full-width"><i class="bi bi-person-fill"></i> View Profile</a>
+                            <a href="#" class="dropdown-item full-width"><i class="bi bi-person-fill"></i> View Profile</a>
                         </li>
                         <li class="dropdown-item-wrapper">
 
@@ -112,42 +117,55 @@ if (isset($_POST['logout'])) {
         </div>
         <!-- Settings Modal -->
         <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="settingsModalLabel">Account Settings</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <div class="row">
+                    <div class="modal-body p-0">
+                        <div class="row g-0">
                             <!-- Sidebar Navigation -->
-                            <div class="col-md-7 col-lg-5">
-                                <ul class="nav nav-pills flex-column" id="settingsTab" role="tablist">
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link active w-100 text-start" id="profile-pic-tab" data-bs-toggle="pill" data-bs-target="#profilePicContent" type="button" role="tab" aria-controls="profilePicContent" aria-selected="true"><i class="bi bi-person-circle me-2"></i>Profile Picture</button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link w-100 text-start" id="account-info-tab" data-bs-toggle="pill" data-bs-target="#accountInfoContent" type="button" role="tab" aria-controls="accountInfoContent" aria-selected="false"><i class="bi bi-person-vcard me-2"></i>Account Details</button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link w-100 text-start" id="password-tab" data-bs-toggle="pill" data-bs-target="#passwordContent" type="button" role="tab" aria-controls="passwordContent" aria-selected="false"><i class="bi bi-shield-lock me-2"></i>Change Password</button>
-                                    </li>
-                                </ul>
+                            <div class="col-md-4 border-end">
+                                <div class="p-4">
+                                    <ul class="nav nav-pills flex-column settings-nav" id="settingsTab" role="tablist">
+                                        <li class="nav-item mb-2" role="presentation">
+                                            <button class="nav-link active w-100 text-start" id="profile-pic-tab" data-bs-toggle="pill" data-bs-target="#profilePicContent" type="button" role="tab" aria-controls="profilePicContent" aria-selected="true">
+                                                <i class="bi bi-person-circle me-2"></i>Profile Picture
+                                            </button>
+                                        </li>
+                                        <li class="nav-item mb-2" role="presentation">
+                                            <button class="nav-link w-100 text-start" id="account-info-tab" data-bs-toggle="pill" data-bs-target="#accountInfoContent" type="button" role="tab" aria-controls="accountInfoContent" aria-selected="false">
+                                                <i class="bi bi-person-vcard me-2"></i>Account Details
+                                            </button>
+                                        </li>
+                                        <li class="nav-item mb-2" role="presentation">
+                                            <button class="nav-link w-100 text-start" id="password-tab" data-bs-toggle="pill" data-bs-target="#passwordContent" type="button" role="tab" aria-controls="passwordContent" aria-selected="false">
+                                                <i class="bi bi-shield-lock me-2"></i>Change Password
+                                            </button>
+                                        </li>
+                                        <li class="nav-item mb-2" role="presentation">
+                                            <button class="nav-link w-100 text-start" id="auth-tab" data-bs-toggle="pill" data-bs-target="#authContent" type="button" role="tab" aria-controls="authContent" aria-selected="false">
+                                                <i class="bi bi-patch-check me-2"></i>Profile Authentication
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                             <!-- Tab Content Area -->
-                            <div class="col-md-5 col-lg-7">
-                                <div class="tab-content" id="settingsTabContent">
+                            <div class="col-md-8">
+                                <div class="tab-content p-4" id="settingsTabContent">
                                     <!-- Profile Picture Tab Content -->
                                     <div class="tab-pane fade show active" id="profilePicContent" role="tabpanel" aria-labelledby="profile-pic-tab">
                                         <div class="settings-section">
-                                            <div class="profile-pic-container text-center mb-3">
-
-                                                <img src=".<?php echo htmlspecialchars($profilePic); ?>" alt="Profile Picture" class="settings-profile-pic img-thumbnail rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+                                            <h6 class="settings-title mb-4">Profile Picture</h6>
+                                            <div class="profile-pic-container text-center mb-4">
+                                                <img src="<?php echo htmlspecialchars($profilePic); ?>" alt="Profile Picture" class="settings-profile-pic img-thumbnail rounded-circle" style="width: 120px; height: 120px; object-fit: cover;">
                                             </div>
                                             <form id="profilePicForm" enctype="multipart/form-data">
                                                 <div class="mb-3">
-                                                    <label for="profilePicUpload" class="form-label visually-hidden">Choose new image:</label>
-                                                    <input class="form-control form-control-sm" type="file" id="profilePicUpload" name="profilePic" accept="image/jpeg,image/png,image/gif">
+                                                    <label for="profilePicUpload" class="form-label">Choose new image:</label>
+                                                    <input class="form-control" type="file" id="profilePicUpload" name="profilePic" accept="image/jpeg,image/png,image/gif">
                                                 </div>
                                                 <div id="profilePicFeedback" class="form-text" style="min-height: 20px;"></div>
                                             </form>
@@ -157,15 +175,15 @@ if (isset($_POST['logout'])) {
                                     <!-- Account Information Tab Content -->
                                     <div class="tab-pane fade" id="accountInfoContent" role="tabpanel" aria-labelledby="account-info-tab">
                                         <div class="settings-section">
-                                            <h6 class="settings-title">Account Information</h6>
+                                            <h6 class="settings-title mb-4">Account Information</h6>
                                             <form id="accountInfoForm">
-                                                <div class="mb-3">
+                                                <div class="mb-4">
                                                     <label for="usernameModal" class="form-label">Username</label>
-                                                    <input type="text" class="form-control" id="usernameModal" name="username" value="<?php echo htmlspecialchars($user['username'] ?? ''); ?>">
+                                                    <input type="text" class="form-control" id="usernameModal" name="username" value="' . htmlspecialchars($user['username'] ?? '') . '">
                                                 </div>
-                                                <div class="mb-3">
+                                                <div class="mb-4">
                                                     <label for="emailModal" class="form-label">Email</label>
-                                                    <input type="email" class="form-control" id="emailModal" name="email" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>">
+                                                    <input type="email" class="form-control" id="emailModal" name="email" value="' . htmlspecialchars($user['email'] ?? '') . '">
                                                 </div>
                                                 <div id="accountInfoFeedback" class="form-text" style="min-height: 20px;"></div>
                                             </form>
@@ -175,22 +193,52 @@ if (isset($_POST['logout'])) {
                                     <!-- Change Password Tab Content -->
                                     <div class="tab-pane fade" id="passwordContent" role="tabpanel" aria-labelledby="password-tab">
                                         <div class="settings-section">
-                                            <h6 class="settings-title">Change Password</h6>
+                                            <h6 class="settings-title mb-4">Change Password</h6>
                                             <div id="passwordChangeFeedback" class="form-text" style="min-height: 20px;"></div>
                                             <form id="passwordForm">
-                                                <div class="mb-3">
+                                                <div class="mb-4">
                                                     <label for="currentPassword" class="form-label">Current Password</label>
                                                     <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
                                                 </div>
-                                                <div class="mb-3">
+                                                <div class="mb-4">
                                                     <label for="newPassword" class="form-label">New Password</label>
                                                     <input type="password" class="form-control" id="newPassword" name="newPassword" required>
                                                 </div>
-                                                <div class="mb-3">
+                                                <div class="mb-4">
                                                     <label for="confirmPassword" class="form-label">Confirm New Password</label>
                                                     <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
                                                     <div class="form-text text-danger" id="passwordMatchError"></div>
                                                 </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <!-- Profile Authentication Tab Content -->
+                                    <div class="tab-pane fade" id="authContent" role="tabpanel" aria-labelledby="auth-tab">
+                                        <div class="settings-section">
+                                            <h6 class="settings-title mb-4">Profile Authentication</h6>
+                                            <p class="text-muted small mb-4">Upload your ID to verify your account.</p>
+                                            
+                                            <form id="authForm" enctype="multipart/form-data">
+                                                <div class="mb-4">
+                                                    <label class="form-label">Verification ID</label>
+                                                    <input type="file" class="form-control" id="verificationId" name="verificationId" accept="image/jpeg,image/png,image/gif">
+                                                    <div class="form-text">Upload a clear photo of your ID</div>
+                                                </div>
+
+                                                <div class="verification-status mb-4 p-3 bg-light rounded">
+                                                    <?php 
+                                                    $verificationStatus = $user['verification_status'] ?? 'unverified';
+                                                    $statusClass = ['unverified' => 'text-muted', 'pending' => 'text-warning', 'verified' => 'text-success', 'rejected' => 'text-danger'][$verificationStatus];
+                                                    $statusIcon = ['unverified' => 'bi-patch-question', 'pending' => 'bi-hourglass-split', 'verified' => 'bi-patch-check-fill', 'rejected' => 'bi-x-circle'][$verificationStatus];
+                                                    ?>
+                                                    <div class="d-flex align-items-center gap-2 ' . $statusClass . '">
+                                                        <i class="bi ' . $statusIcon . '"></i>
+                                                        <span class="text-capitalize">Status: ' . $verificationStatus . '</span>
+                                                    </div>
+                                                </div>
+
+                                                <div id="authFeedback" class="form-text" style="min-height: 20px;"></div>
                                             </form>
                                         </div>
                                     </div>
@@ -199,8 +247,7 @@ if (isset($_POST['logout'])) {
                         </div>
                     </div>
                     <div class="modal-footer">
-               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="saveSettingsBtn">Save Changes</button>
+                        <button type="button" class="btn btn-primary w-100" id="saveSettingsBtn" data-active-form="">Save Changes</button>
                     </div>
                 </div>
             </div>
@@ -268,8 +315,7 @@ if (isset($_POST['logout'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="../assets/js/userProfile.js"></script>
     <script src="../assets/js/changePassword.js"></script>
-
-    <script src="../assets/js/changeUserInfo.js"></script>
-    <script src="../assets/js/modalInit.js"></script>
+    <script src="../assets/js/profileAuth.js"></script>
+    <script src="../assets/js/settingsModal.js"></script>
 </body>
 </html> 
