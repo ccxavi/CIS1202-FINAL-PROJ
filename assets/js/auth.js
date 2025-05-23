@@ -18,7 +18,9 @@ document.addEventListener('DOMContentLoaded', function() {
         registerFeedback.style.display = 'none';
         registerFeedback.textContent = 'Password must be at least 6 characters.';
         
-        registerPassword.parentNode.insertBefore(registerFeedback, registerPassword.nextSibling);
+        // Insert after the password-container div instead of the input
+        const passwordContainer = registerPassword.closest('.password-container');
+        passwordContainer.parentNode.insertBefore(registerFeedback, passwordContainer.nextSibling);
         
         // Validate register password on input
         registerPassword.addEventListener('input', function() {
@@ -30,26 +32,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Password visibility toggle for login form only
-    const loginPassword = document.getElementById('password');
-    const togglePassword = document.getElementById('togglePassword');
-    
-    if (loginPassword && togglePassword) {
-        togglePassword.addEventListener('click', function() {
-            // If current type is password, change to text (show password)
-            const type = loginPassword.getAttribute('type') === 'password' ? 'text' : 'password';
-            loginPassword.setAttribute('type', type);
-            
-            // Toggle icon - use slashed icon when password is hidden
-            if (type === 'password') {
-                // Password is now hidden, show the slashed eye
-                this.querySelector('i').classList.remove('bi-eye');
-                this.querySelector('i').classList.add('bi-eye-slash');
-            } else {
-                // Password is now visible, show the regular eye
-                this.querySelector('i').classList.remove('bi-eye-slash');
-                this.querySelector('i').classList.add('bi-eye');
-            }
-        });
+    // Function to toggle password visibility
+    function setupPasswordToggle(toggleId, passwordId) {
+        const toggleButton = document.getElementById(toggleId);
+        const passwordInput = document.getElementById(passwordId);
+        
+        if (toggleButton && passwordInput) {
+            toggleButton.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                // Toggle icon
+                const icon = this.querySelector('i');
+                icon.classList.toggle('bi-eye');
+                icon.classList.toggle('bi-eye-slash');
+            });
+        }
     }
+
+    // Setup password toggles for both login and register forms
+    setupPasswordToggle('togglePassword', 'password');
+    setupPasswordToggle('toggleRegisterPassword', 'registerPassword');
 }); 

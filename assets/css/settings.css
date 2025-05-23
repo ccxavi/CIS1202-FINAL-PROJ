@@ -1,0 +1,81 @@
+.settings-nav .nav-link {
+    border-radius: 8px;
+    padding: 10px 15px;
+    color: #495057;
+    transition: all 0.3s ease;
+}
+
+.settings-nav .nav-link:hover {
+    background-color: #f8f9fa;
+}
+
+.settings-nav .nav-link.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.settings-nav .nav-link i {
+    font-size: 1.1rem;
+}
+
+.settings-section {
+    max-width: 100%;
+}
+
+.settings-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #212529;
+}
+
+.verification-status {
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.verification-status i {
+    font-size: 1.2rem;
+}
+
+#settingsModal .modal-content {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+#settingsModal .modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+#settingsModal .modal-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    padding: 1rem;
+}
+
+#settingsModal .btn-primary {
+    padding: 0.5rem 2rem;
+    font-weight: 500;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.form-text {
+    color: #6c757d;
+}
+
+.form-control, .form-select {
+    border-color: #dee2e6;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
+}
+
+.settings-profile-pic {
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+} 

@@ -1,21 +1,37 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "veroDB";
+function getDatabaseConnection() {
+    static $pdo = null;
+    if ($pdo === null) {
+        $servername = "localhost";
+        $username = "root";
+        $password = "";
+        $dbname = "veroDB";
+
+        try {
+            $dsn = "mysql:host=$servername;dbname=$dbname;charset=utf8mb4";
+            $pdo = new PDO($dsn, $username, $password);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Database Connection Error: " . $e->getMessage());
+            die("Connection failed: " . $e->getMessage());
+        }
+    }
+    return $pdo;
+}
 
 try {
-    $dsn = "mysql:host=$servername;dbname=$dbname;charset=utf8mb4";
-    $pdo = new PDO($dsn, $username, $password);
-
-    // Set PDO error mode to exception
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // Optional: Set default fetch mode to associative array
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    $pdo = getDatabaseConnection();
 
     // Set timezone
     date_default_timezone_set('Asia/Manila');
+
+    // Add verification columns to users table if they don't exist
+    $sql = "ALTER TABLE users 
+            ADD COLUMN IF NOT EXISTS verification_status ENUM('unverified', 'pending', 'verified', 'rejected') DEFAULT 'unverified',
+            ADD COLUMN IF NOT EXISTS verification_document VARCHAR(255) NULL,
+            ADD COLUMN IF NOT EXISTS verification_submitted_at DATETIME NULL";
+    $pdo->exec($sql);
 
     // Create posts table if it doesn't exist
     $sql = "CREATE TABLE IF NOT EXISTS posts (
@@ -103,23 +119,15 @@ try {
     $sql = "ALTER TABLE bookmarks ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE";
     $pdo->exec($sql);
 
-    // Add role column to users table if it doesn't exist
-    $sql = "ALTER TABLE users ADD COLUMN IF NOT EXISTS role ENUM('user', 'admin') DEFAULT 'user'";
+    // Add remember me columns to users table if they don't exist
+    $sql = "ALTER TABLE users 
+            ADD COLUMN IF NOT EXISTS remember_token VARCHAR(64) NULL,
+            ADD COLUMN IF NOT EXISTS token_expiry DATETIME NULL";
     $pdo->exec($sql);
 
-    // Add status column to users table if it doesn't exist
-    $sql = "ALTER TABLE users ADD COLUMN IF NOT EXISTS status ENUM('active', 'banned') DEFAULT 'active'";
+    // Add index for remember_token if it doesn't exist
+    $sql = "CREATE INDEX IF NOT EXISTS idx_remember_token ON users(remember_token)";
     $pdo->exec($sql);
-
-    // Add is_hidden and is_flagged columns to posts table if they don't exist
-    $pdo->exec("ALTER TABLE posts 
-        ADD COLUMN IF NOT EXISTS is_hidden BOOLEAN DEFAULT FALSE,
-        ADD COLUMN IF NOT EXISTS is_flagged BOOLEAN DEFAULT FALSE");
-
-    // Add is_hidden and is_flagged columns to comments table if they don't exist
-    $pdo->exec("ALTER TABLE comments 
-        ADD COLUMN IF NOT EXISTS is_hidden BOOLEAN DEFAULT FALSE,
-        ADD COLUMN IF NOT EXISTS is_flagged BOOLEAN DEFAULT FALSE");
 
     // Connection successful
     // echo "Connected successfully";
