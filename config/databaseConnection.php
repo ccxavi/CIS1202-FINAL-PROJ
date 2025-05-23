@@ -71,6 +71,38 @@ try {
     )";
     $pdo->exec($sql);
 
+    // Create collections table if it doesn't exist
+    $sql = "CREATE TABLE IF NOT EXISTS collections (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        is_active BOOLEAN DEFAULT TRUE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )";
+    $pdo->exec($sql);
+
+    // Create bookmarks table if it doesn't exist
+    $sql = "CREATE TABLE IF NOT EXISTS bookmarks (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        collection_id INT NOT NULL,
+        title VARCHAR(255),
+        article_link TEXT NOT NULL,
+        author VARCHAR(255),
+        published_date DATETIME,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        is_active BOOLEAN DEFAULT TRUE,
+        FOREIGN KEY (collection_id) REFERENCES collections(id) ON DELETE CASCADE
+    )";
+    $pdo->exec($sql);
+
+    // Update existing tables to add is_active column if it doesn't exist
+    $sql = "ALTER TABLE collections ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE";
+    $pdo->exec($sql);
+
+    $sql = "ALTER TABLE bookmarks ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE";
+    $pdo->exec($sql);
+
     // Connection successful
     // echo "Connected successfully";
 } catch (PDOException $e) {

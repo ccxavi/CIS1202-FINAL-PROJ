@@ -1,47 +1,61 @@
 <?php
-require_once __DIR__ . '/../config/databaseConnection.php';
 session_start();
+require_once __DIR__ . '/../config/databaseConnection.php';
+require_once __DIR__ . '/../controllers/userAuthHandler.php';
 
-header('Content-Type: application/json');
-
-if (!isset($_SESSION['userID'])) {
+// Check if user is authenticated
+if (!isAuthenticated()) {
     echo json_encode(['success' => false, 'message' => 'Not authenticated']);
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
-    exit();
-}
-
+// Check if collection_id is provided
 if (!isset($_POST['collection_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Missing collection ID']);
+    echo json_encode(['success' => false, 'message' => 'Collection ID is required']);
     exit();
 }
 
-$collectionId = filter_var($_POST['collection_id'], FILTER_SANITIZE_NUMBER_INT);
+$collectionId = $_POST['collection_id'];
 $userId = $_SESSION['userID'];
 
 try {
-    // First verify that this collection belongs to the current user
-    $checkStmt = $pdo->prepare("SELECT id FROM collections WHERE id = ? AND user_id = ?");
-    $checkStmt->execute([$collectionId, $userId]);
+    // Start transaction
+    $pdo->beginTransaction();
+
+    // First verify that the collection belongs to the user
+    $checkSql = "SELECT id FROM collections WHERE id = :id AND user_id = :user_id AND is_active = TRUE";
+    $checkStmt = $pdo->prepare($checkSql);
+    $checkStmt->execute(['id' => $collectionId, 'user_id' => $userId]);
     
     if (!$checkStmt->fetch()) {
-        echo json_encode(['success' => false, 'message' => 'Collection not found or access denied']);
+        $pdo->rollBack();
+        echo json_encode(['success' => false, 'message' => 'Collection not found or unauthorized']);
         exit();
     }
-    
-    // Delete the collection
-    $deleteStmt = $pdo->prepare("DELETE FROM collections WHERE id = ? AND user_id = ?");
-    $success = $deleteStmt->execute([$collectionId, $userId]);
-    
-    if ($success) {
-        echo json_encode(['success' => true, 'message' => 'Collection deleted successfully']);
+
+    // Soft delete all bookmarks in the collection
+    $bookmarkSql = "UPDATE bookmarks SET is_active = FALSE WHERE collection_id = :collection_id";
+    $bookmarkStmt = $pdo->prepare($bookmarkSql);
+    $bookmarkStmt->execute(['collection_id' => $collectionId]);
+
+    // Soft delete the collection
+    $collectionSql = "UPDATE collections SET is_active = FALSE WHERE id = :id AND user_id = :user_id";
+    $collectionStmt = $pdo->prepare($collectionSql);
+    $result = $collectionStmt->execute([
+        'id' => $collectionId,
+        'user_id' => $userId
+    ]);
+
+    if ($result) {
+        $pdo->commit();
+        echo json_encode(['success' => true, 'message' => 'Collection and its bookmarks deleted successfully']);
     } else {
+        $pdo->rollBack();
         echo json_encode(['success' => false, 'message' => 'Failed to delete collection']);
     }
 } catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Database error']);
+    $pdo->rollBack();
+    error_log("Error deleting collection: " . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'Database error occurred']);
 }
 ?> 

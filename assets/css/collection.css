@@ -82,8 +82,7 @@ header{
   width: 100%;
   position: relative;
   overflow: hidden;
-  border-top-right-radius: 100px;
-  border-right-style: dashed;
+ 
   display: flex;
   flex-direction: column;
   gap: 0px;
@@ -160,6 +159,8 @@ header{
   overflow-y: auto;
   max-height: 671.8px;
   width: 100%;
+  border-top-left-radius: 100px;
+  border-left-style: dashed;
 }
 
 .bookmarks-container {
