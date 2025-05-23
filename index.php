@@ -38,6 +38,7 @@ if (isset($_POST['logout'])) {
     <link rel="stylesheet" href="./assets/css/header.css">
     <link rel="stylesheet" href="./assets/css/main.css">
     <link rel="stylesheet" href="./assets/css/footer.css">
+    <link rel="stylesheet" href="./assets/css/projects.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" crossorigin="anonymous">
 </head>
@@ -280,6 +281,48 @@ if (isset($_POST['logout'])) {
                             <img src="./assets/img/Galve.png" alt="Yñaki Galve" class="member-avatar">
                             <h3 class="member-name">Yñaki</h3>
                             <p class="member-role">UI/UX Designer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="projects-section">
+            <div class="projects-container">
+                <h2 class="projects-title">Featured <span class="blue-text">Projects</span></h2>
+                <p class="projects-subtitle">Explore our latest research initiatives</p>
+                
+                <div class="projects-list">
+                    <div class="project-item">
+                        <div class="project-content">
+                            <h3>AI-Powered Research Assistant</h3>
+                            <p>An intelligent system that helps researchers analyze and synthesize academic papers efficiently.</p>
+                            <div class="project-meta">
+                                <span class="project-category">Artificial Intelligence</span>
+                                <span class="project-date">2024</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-item">
+                        <div class="project-content">
+                            <h3>Blockchain for Academic Publishing</h3>
+                            <p>Implementing blockchain technology to ensure transparency and authenticity in academic publishing.</p>
+                            <div class="project-meta">
+                                <span class="project-category">Blockchain</span>
+                                <span class="project-date">2024</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-item">
+                        <div class="project-content">
+                            <h3>Data Visualization Platform</h3>
+                            <p>A comprehensive tool for visualizing complex research data and findings.</p>
+                            <div class="project-meta">
+                                <span class="project-category">Data Science</span>
+                                <span class="project-date">2024</span>
+                            </div>
                         </div>
                     </div>
                 </div>

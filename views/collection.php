@@ -242,15 +242,37 @@ if (isset($_POST['logout'])) {
   </header>
 
   <section class="content">
-    <!-- Bookmark Section -->
-    <div class="bookmark-section collection-section">
-      <div class="section-title" id="bookmark-title-project">
+    
+    
+    <!-- Projects Section -->
+    <div class="section-title collection-title" id="section-title-project">
+        <i>Projects</i>
+        <span class="count">(<?php echo $collectionsCount; ?>)</span>
+    </div>
+   
+
+    <div class="project-section collection-section">
+      <?php foreach ($collections as $collection): ?>
+        <div class="project" data-collection-id="<?php echo htmlspecialchars($collection['id']); ?>">
+          <div class="collection-name" data-collection-id="<?php echo htmlspecialchars($collection['id']); ?>">
+            <?php echo htmlspecialchars($collection['name']); ?>
+          </div>
+          <button class="rename-project-btn" data-collection-id="<?php echo htmlspecialchars($collection['id']); ?>">
+            <i class="bi bi-pencil"></i>
+          </button>
+        </div>
+      <?php endforeach; ?>
+    </div>
+    <div class="section-title bookmark-title" id="bookmark-title-project">
         <i>Bookmarked</i>
         <span class="count" id="bookmarks-count">(0)</span>
-      </div>
+    </div>
+    <!-- Bookmark Section -->
+    <div class="bookmark-section collection-section">
+      
       
       <!-- Collection Name Header -->
-      <div class="collection-header no-collection">
+      <!-- <div class="collection-header no-collection">
         <div class="collection-header-name">
           <h2 id="current-collection-name">No collection selected</h2>
           <button id="edit-collection-name" class="edit-name-btn">
@@ -258,34 +280,10 @@ if (isset($_POST['logout'])) {
           </button>
         </div>
       </div>
-      
+       -->
       <div class="bookmarks-container">
         <div class="no-selection-message">Select a collection to view bookmarks</div>
       </div>
-    </div>
-    
-    <!-- Projects Section -->
-    <div class="project-section collection-section">
-      <div class="section-title" id="section-title-project">
-        <i>Projects</i>
-        <span class="count">(<?php echo $collectionsCount; ?>)</span>
-      </div>
-      <?php foreach ($collections as $collection): ?>
-        <div class="project" data-collection-id="<?php echo htmlspecialchars($collection['id']); ?>">
-          <div class="non-clicked">
-            <img src="../assets/img/folder.png" alt="">
-            <div class="collection-name" data-collection-id="<?php echo htmlspecialchars($collection['id']); ?>">
-              <?php echo htmlspecialchars($collection['name']); ?>
-            </div>
-          </div>
-          <div class="clicked">
-            <img src="../assets/img/folderClicked.png" alt="">
-            <div class="collection-name" data-collection-id="<?php echo htmlspecialchars($collection['id']); ?>">
-              <?php echo htmlspecialchars($collection['name']); ?>
-            </div>
-          </div>
-        </div>
-      <?php endforeach; ?>
     </div>
   </section>
 </div>

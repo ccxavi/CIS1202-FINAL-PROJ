@@ -29,6 +29,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Delete Bookmark button
     document.getElementById('deleteBookmark').addEventListener('click', deleteSelectedBookmarks);
 
+    // Add rename button click handlers
+    document.querySelectorAll('.rename-project-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent project selection when clicking rename
+            const collectionId = this.dataset.collectionId;
+            const projectElement = this.closest('.project');
+            const collectionNameElement = projectElement.querySelector('.collection-name');
+            const currentName = collectionNameElement.textContent.trim();
+            
+            const newName = prompt('Enter a new name for this collection:', currentName);
+            
+            if (newName !== null && newName.trim() !== '') {
+                renameCollection(collectionId, newName.trim());
+            }
+        });
+    });
+
     // Add handlers for bookmark selection
     document.addEventListener('click', function(e) {
         const bookmarkItem = e.target.closest('.bookmark-item');
@@ -281,17 +298,8 @@ function createNewCollection() {
             
             // Match the exact HTML structure of existing collections
             newProject.innerHTML = `
-                <div class="non-clicked">
-                    <img src="../assets/img/folder.png" alt="">
-                    <div class="collection-name" data-collection-id="${data.collection.id}">
-                        ${data.collection.name}
-                    </div>
-                </div>
-                <div class="clicked">
-                    <img src="../assets/img/folderClicked.png" alt="">
-                    <div class="collection-name" data-collection-id="${data.collection.id}">
-                        ${data.collection.name}
-                    </div>
+                <div class="collection-name" data-collection-id="${data.collection.id}">
+                    ${data.collection.name}
                 </div>
             `;
 
@@ -404,6 +412,40 @@ function showError(message) {
 
 function showSuccess(message) {
     alert(message); // Simple success notification
+}
+
+function renameCollection(collectionId, newName) {
+    fetch('../controllers/renameCollection.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `collection_id=${collectionId}&new_name=${encodeURIComponent(newName)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update collection name in DOM
+            document.querySelectorAll(`.collection-name[data-collection-id="${collectionId}"]`).forEach(el => {
+                el.textContent = newName;
+            });
+            
+            // Update the collection name in the header if it's the currently selected collection
+            const currentCollectionHeader = document.getElementById('current-collection-name');
+            if (currentCollectionHeader && currentCollectionHeader.dataset.collectionId === collectionId) {
+                currentCollectionHeader.textContent = newName;
+            }
+            
+            // Show success message
+            showSuccess('Collection renamed successfully');
+        } else {
+            showError(data.message || 'Failed to rename collection');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showError('An error occurred while renaming the collection');
+    });
 }
 
 // Add this CSS to your stylesheet or add it dynamically

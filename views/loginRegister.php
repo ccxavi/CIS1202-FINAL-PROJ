@@ -168,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <i class="bi bi-eye-slash"></i>
                                     </button>
                                 </div>
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">forgot password</a>
+                                <a href="">forgot password</a>
                                 <?php if ($login_password_error): ?>
                                     <div class="validation-feedback <?php echo $login_password_error['type']; ?>">
                                         <i class="bi <?php echo $login_password_error['type'] === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'; ?>"></i>
@@ -230,43 +230,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="../assets/js/auth.js"></script>
-
-    <!-- Forgot Password Modal -->
-    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="forgotPasswordModalLabel">Password Reset</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="reset-guide text-center">
-                        <div class="shield-icon mb-3">
-                            <i class="bi bi-shield-lock-fill"></i>
-                        </div>
-                        <h4 class="mb-3">Forgot your password?</h4>
-                        <p class="mb-4">Don't worry! We're here to help you regain access to your account securely.</p>
-                        <div class="guide-steps">
-                            <p>To reset your password, please follow these steps:</p>
-                            <ol>
-                                <li>Contact our support team at <a href="mailto:support.vero@ph.com">support.vero@ph.com</a></li>
-                                <li>Include the following information in your email:
-                                    <ul>
-                                        <li>Your registered username</li>
-                                        <li>Your email address</li>
-                                    </ul>
-                                </li>
-                                <li>Use "Password Reset Request" as your email subject line</li>
-                            </ol>
-                            <p>Our support team will assist you with the password reset process.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="mailto:support.vero@ph.com?subject=Password Reset Request" class="btn btn-primary">Contact Support</a>
-                </div>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
