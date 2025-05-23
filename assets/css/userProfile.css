@@ -65,6 +65,183 @@
   font-size: 0.875em; /* Slightly smaller text for feedback */
 }
 
+/* Profile Page Styles */
+.profile-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgb(0 0 0 / 0.1);
+    margin-bottom: 2rem;
+}
+
+.profile-pic-container {
+    flex-shrink: 0;
+}
+
+.profile-pic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--azure-blue);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info {
+    flex-grow: 1;
+}
+
+.profile-info h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.profile-info .email {
+    color: #666;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.profile-info .join-date {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.profile-content {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgb(0 0 0 / 0.1);
+    padding: 2rem;
+}
+
+/* Posts Section */
+.posts-section h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--azure-blue);
+}
+
+.no-posts {
+    text-align: center;
+    color: #666;
+    padding: 2rem;
+    font-style: italic;
+}
+
+.post-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.post-card:hover {
+    transform: translateY(-2px);
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.post-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--azure-blue);
+    margin: 0;
+}
+
+.post-time {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.post-content {
+    color: #333;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.post-stats {
+    display: flex;
+    gap: 1rem;
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.post-stats span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.post-stats i {
+    color: var(--azure-blue);
+}
+
+.post-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.view-post-btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: var(--azure-blue);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.view-post-btn:hover {
+    background-color: #1755c1;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem;
+    }
+
+    .profile-pic {
+        width: 120px;
+        height: 120px;
+    }
+
+    .profile-info h1 {
+        font-size: 1.75rem;
+    }
+
+    .profile-container {
+        padding: 1rem;
+    }
+
+    .profile-content {
+        padding: 1.5rem;
+    }
+}
+
 /* Commented out: Old styles for horizontal tabs, if any were here before. 
    The primary goal is to ensure the new sidebar styles are clean.
 */

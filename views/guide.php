@@ -87,7 +87,7 @@ if (isset($_POST['logout'])) {
                                 <div class="user-email">' . htmlspecialchars($user['email']) . '</div>
                             </li>
                             <li class="dropdown-item-wrapper">
-                                <a href="#" class="dropdown-item full-width"><i class="bi bi-person-fill"></i> View Profile</a>
+                                <a href="profile.php" class="dropdown-item full-width"><i class="bi bi-person-fill"></i> View Profile</a>
                             </li>
                             <li class="dropdown-item-wrapper">
                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal"><i class="bi bi-gear-fill"></i> Settings</a>

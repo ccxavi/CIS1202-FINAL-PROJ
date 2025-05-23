@@ -103,6 +103,24 @@ try {
     $sql = "ALTER TABLE bookmarks ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE";
     $pdo->exec($sql);
 
+    // Add role column to users table if it doesn't exist
+    $sql = "ALTER TABLE users ADD COLUMN IF NOT EXISTS role ENUM('user', 'admin') DEFAULT 'user'";
+    $pdo->exec($sql);
+
+    // Add status column to users table if it doesn't exist
+    $sql = "ALTER TABLE users ADD COLUMN IF NOT EXISTS status ENUM('active', 'banned') DEFAULT 'active'";
+    $pdo->exec($sql);
+
+    // Add is_hidden and is_flagged columns to posts table if they don't exist
+    $pdo->exec("ALTER TABLE posts 
+        ADD COLUMN IF NOT EXISTS is_hidden BOOLEAN DEFAULT FALSE,
+        ADD COLUMN IF NOT EXISTS is_flagged BOOLEAN DEFAULT FALSE");
+
+    // Add is_hidden and is_flagged columns to comments table if they don't exist
+    $pdo->exec("ALTER TABLE comments 
+        ADD COLUMN IF NOT EXISTS is_hidden BOOLEAN DEFAULT FALSE,
+        ADD COLUMN IF NOT EXISTS is_flagged BOOLEAN DEFAULT FALSE");
+
     // Connection successful
     // echo "Connected successfully";
 } catch (PDOException $e) {

@@ -37,12 +37,7 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    profile_pic VARCHAR(255) DEFAULT NULL,
-    verification_status ENUM('unverified', 'pending', 'verified', 'rejected') DEFAULT 'unverified',
-    verification_document VARCHAR(255) DEFAULT NULL,
-    verification_submitted_at DATETIME DEFAULT NULL,
-    remember_token VARCHAR(64) DEFAULT NULL,
-    token_expiry DATETIME DEFAULT NULL
+    profile_pic VARCHAR(255) DEFAULT NULL
 );
 
 CREATE TABLE articles (
