@@ -1,20 +1,14 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
 session_start();
+}
 
+require_once __DIR__ . '/../includes/autoLogin.php';
 require_once __DIR__ . '/../controllers/userAuthHandler.php';
 // redirectIfAuthenticated(); // redirect to dashboard if authenticated
 
+// No need to check remember me here as it's handled in autoLogin.php
 if(isAuthenticated()){
-    $userID = $_SESSION['userID'];
-    $user = findUserByID($userID);
-    $profilePic = $user['profile_pic'] ?? './assets/photo/Profile_Pictures/default.jpg';
-    
-    // If the profile pic path starts with './', convert it to '../'
-    if (strpos($profilePic, './') === 0) {
-        $profilePic = '../' . substr($profilePic, 2);
-    }
-    
-    // Redirect to home if already logged in
     header('Location: ../index.php');
     exit();
 }
@@ -139,20 +133,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </h1>
             </div>
             <div class="auth-card">
-                <ul class="nav nav-tabs mb-3" id="authTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link <?php echo (!isset($_POST['register']) && !isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] === 'login')) || $login_feedback ? 'active' : ''; ?>" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab" aria-controls="login" aria-selected="true">Login</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link <?php echo (isset($_POST['register']) || (isset($_GET['tab']) && $_GET['tab'] === 'register')) || $register_feedback ? 'active' : ''; ?>" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button" role="tab" aria-controls="register" aria-selected="false">Register</button>
-                    </li>
-                </ul>
                 <div class="tab-content" id="authTabContent">
                     <div class="tab-pane fade <?php echo (!isset($_POST['register']) && !isset($_GET['tab']) || (isset($_GET['tab']) && $_GET['tab'] === 'login')) || $login_feedback ? 'show active' : ''; ?>" id="login" role="tabpanel" aria-labelledby="login-tab">
+                        <div class="text-center mb-5">
+                            <img src="../assets/img/logo.png" alt="Vero Logo" class="login-logo mb-4">
+                            <h2 class="mb-2">Welcome back</h2>
+                            <p class="text-muted">Use your Vero Account</p>
+                        </div>
                         <form method="POST" action="loginRegister.php">
-                            <div class="form-group mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
+                            <div class="form-group">
+                                <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder="Email" required>
                                 <?php if ($login_email_error): ?>
                                     <div class="validation-feedback <?php echo $login_email_error['type']; ?>">
                                         <i class="bi <?php echo $login_email_error['type'] === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'; ?>"></i>
@@ -160,15 +150,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            <div class="form-group mb-3">
-                                <label for="password" class="form-label">Password</label>
+                            <div class="form-group">
                                 <div class="password-container">
-                                    <input type="password" class="form-control" id="password" name="password" required>
+                                    <input type="password" class="form-control form-control-lg" id="password" name="password" placeholder="Password" required>
                                     <button type="button" class="password-toggle" id="togglePassword">
                                         <i class="bi bi-eye-slash"></i>
                                     </button>
                                 </div>
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">forgot password</a>
                                 <?php if ($login_password_error): ?>
                                     <div class="validation-feedback <?php echo $login_password_error['type']; ?>">
                                         <i class="bi <?php echo $login_password_error['type'] === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'; ?>"></i>
@@ -176,14 +164,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            <button type="submit" name="login" class="btn btn-primary w-100">Login</button>
+                            <div class="form-options mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="rememberMe" name="remember_me" value="1">
+                                    <label class="form-check-label" for="rememberMe">Stay signed in</label>
+                                </div>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal" class="forgot-link">Forgot password?</a>
+                            </div>
+                            <div class="form-actions">
+                                <div class="helper-text mb-4">
+                                    <p class="text-muted">Don't have an account? <a href="?tab=register" class="text-decoration-none">Create account</a></p>
+                                </div>
+                                <button type="submit" name="login" class="btn btn-primary btn-lg w-100">Login</button>
+                            </div>
                         </form>
                     </div>
                     <div class="tab-pane fade <?php echo (isset($_POST['register']) || (isset($_GET['tab']) && $_GET['tab'] === 'register')) || $register_feedback ? 'show active' : ''; ?>" id="register" role="tabpanel" aria-labelledby="register-tab">
+                        <div class="text-center mb-5">
+                            <img src="../assets/img/logo.png" alt="Vero Logo" class="login-logo mb-4">
+                            <h2 class="mb-2">Create your account</h2>
+                            <p class="text-muted">Join the Vero community</p>
+                        </div>
                         <form method="POST" action="loginRegister.php">
-                            <div class="form-group mb-3">
-                                <label for="userNameInput" class="form-label">User Name</label>
-                                <input type="text" class="form-control" id="userNameInput" name="userNameInput" required>
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-lg" id="userNameInput" name="userNameInput" placeholder="Username" required>
                                 <?php if ($register_username_error): ?>
                                     <div class="validation-feedback <?php echo $register_username_error['type']; ?>">
                                         <i class="bi <?php echo $register_username_error['type'] === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'; ?>"></i>
@@ -191,9 +195,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            <div class="form-group mb-3">
-                                <label for="registerEmail" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="registerEmail" name="email" required>
+                            <div class="form-group">
+                                <input type="email" class="form-control form-control-lg" id="registerEmail" name="email" placeholder="Email" required>
                                 <?php if ($register_email_error): ?>
                                     <div class="validation-feedback <?php echo $register_email_error['type']; ?>">
                                         <i class="bi <?php echo $register_email_error['type'] === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'; ?>"></i>
@@ -201,9 +204,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            <div class="form-group mb-3">
-                                <label for="registerPassword" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="registerPassword" name="password" required>
+                            <div class="form-group">
+                                <div class="password-container">
+                                    <input type="password" class="form-control form-control-lg" id="registerPassword" name="password" placeholder="Password" required>
+                                    <button type="button" class="password-toggle" id="toggleRegisterPassword">
+                                        <i class="bi bi-eye-slash"></i>
+                                    </button>
+                                </div>
                                 <?php if ($register_password_error): ?>
                                     <div class="validation-feedback">
                                         <i class="bi bi-exclamation-triangle-fill"></i>
@@ -211,7 +218,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            <button type="submit" name="register" class="btn btn-primary w-100">Register</button>
+                            <div class="form-options mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                                    <label class="form-check-label" for="agreeTerms">
+                                        I agree to the <a href="#" class="terms-link">Terms of Service</a> and <a href="#" class="privacy-link">Privacy Policy</a>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <div class="helper-text mb-4">
+                                    <p class="text-muted">Already have an account? <a href="?tab=login" class="text-decoration-none">Login instead</a></p>
+                                </div>
+                                <button type="submit" name="register" class="btn btn-primary btn-lg w-100">Create Account</button>
+                            </div>
                         </form>
                     </div>
                 </div>
