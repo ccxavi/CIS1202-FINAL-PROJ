@@ -59,6 +59,9 @@ if (isset($_POST['logout'])) {
                             <a href='./views/collection.php'><div class='collection'>Collection</div></a>
                             <a href='./views/community.php'><div class='community'>Community</div></a>
                             ";
+                        if (isAdmin()) {
+                            echo "<a href='./admin/index.php'><div class='admin'>Admin</div></a>";
+                        }
                     } 
                 ?>
             </div>
@@ -337,10 +340,83 @@ if (isset($_POST['logout'])) {
                 <a href="#"><div class="github"><i class="bi bi-github"></i></div></a>
                 <a href="#"><div class="x"><i class="bi bi-twitter-x"></i></div></a>
             </div>
+            <?php if (isAuthenticated() && !isAdmin()): ?>
+            <button class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#adminRequestModal">
+                <i class="bi bi-shield-lock"></i> Request Admin Access
+            </button>
+            <?php endif; ?>
         </div>
     </footer>
+
+    <!-- Admin Request Modal -->
+    <div class="modal fade" id="adminRequestModal" tabindex="-1" aria-labelledby="adminRequestModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adminRequestModalLabel">Want to be an admin?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="adminRequestForm">
+                        <div class="mb-3">
+                            <label for="requestName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="requestName" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="requestEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="requestEmail" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="requestReason" class="form-label">Why do you want to be an admin?</label>
+                            <textarea class="form-control" id="requestReason" name="reason" rows="4" required></textarea>
+                        </div>
+                        <div id="requestFeedback" class="form-text" style="min-height: 20px;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="submitAdminRequest">Submit Request</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="./assets/js/userProfile.js"></script>
     <script src="./assets/js/changePassword.js"></script>
+    <script>
+        // Admin Request Form Handler
+        document.getElementById('submitAdminRequest').addEventListener('click', function() {
+            const form = document.getElementById('adminRequestForm');
+            const feedback = document.getElementById('requestFeedback');
+            
+            const formData = new FormData(form);
+            formData.append('action', 'request_admin');
+
+            fetch('./controllers/adminRequestHandler.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    feedback.className = 'form-text text-success';
+                    feedback.textContent = 'Request submitted successfully!';
+                    form.reset();
+                    setTimeout(() => {
+                        bootstrap.Modal.getInstance(document.getElementById('adminRequestModal')).hide();
+                    }, 2000);
+                } else {
+                    feedback.className = 'form-text text-danger';
+                    feedback.textContent = data.message || 'Error submitting request. Please try again.';
+                }
+            })
+            .catch(error => {
+                feedback.className = 'form-text text-danger';
+                feedback.textContent = 'Error submitting request. Please try again.';
+                console.error('Error:', error);
+            });
+        });
+    </script>
 </body>
 </html>
