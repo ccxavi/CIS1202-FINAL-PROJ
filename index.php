@@ -73,6 +73,9 @@ if (isset($_POST['logout'])) {
                             <a href='./views/collection.php'><div class='collection'>Collection</div></a>
                             <a href='./views/community.php'><div class='community'>Community</div></a>
                             ";
+                            if (isAdmin()) {
+                                echo "<a href='./admin/index.php'><div class='admin'>Admin</div></a>";
+                            }
                     } 
                 ?>
             </div>

@@ -312,7 +312,7 @@ if (isset($_POST['logout'])) {
             <div class="post-card" id="post-<?php echo $post['id']; ?>">
                 <div class="post-card-content">
                     <div class="post-left">
-                        <img src="<?php echo htmlspecialchars($post['profile_pic']); ?>" alt="Profile" class="post-profile-pic">
+                        <img src="<?php echo !empty($post['profile_pic']) ? htmlspecialchars($post['profile_pic']) : '../assets/photo/Profile_Pictures/default.jpg'; ?>" alt="Profile" class="post-profile-pic">
                     </div>
                     <div class="post-content">
                         <div class="post-header">
@@ -350,7 +350,7 @@ if (isset($_POST['logout'])) {
                     ?>
                         <div class="comment" id="comment-<?php echo $comment['id']; ?>">
                             <div class="comment-header">
-                                <img src="<?php echo htmlspecialchars($comment['profile_pic']); ?>" alt="Profile" class="comment-profile-pic">
+                                <img src="<?php echo !empty($comment['profile_pic']) ? htmlspecialchars($comment['profile_pic']) : '../assets/photo/Profile_Pictures/default.jpg'; ?>" alt="Profile" class="comment-profile-pic">
                                 <div class="comment-meta">
                                     <div class="comment-author-time">
                                         <span class="comment-author"><?php echo htmlspecialchars($comment['username']); ?></span>
@@ -394,7 +394,7 @@ if (isset($_POST['logout'])) {
                                 ?>
                                     <div class="reply">
                                         <div class="comment-header">
-                                            <img src="<?php echo htmlspecialchars($reply['profile_pic']); ?>" alt="Profile" class="comment-profile-pic">
+                                            <img src="<?php echo !empty($reply['profile_pic']) ? htmlspecialchars($reply['profile_pic']) : '../assets/photo/Profile_Pictures/default.jpg'; ?>" alt="Profile" class="comment-profile-pic">
                                             <div class="comment-meta">
                                                 <div class="comment-author-time">
                                                     <span class="comment-author"><?php echo htmlspecialchars($reply['username']); ?></span>
