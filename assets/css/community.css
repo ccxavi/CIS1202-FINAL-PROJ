@@ -265,7 +265,8 @@ body.community-page {
 }
 
 .comments-container {
-    margin: 15px 100px 20px;
+    margin-bottom: 20px;
+    margin-top: 15px;
     max-height: 300px;
     overflow-y: auto;
     padding-right: 10px;
