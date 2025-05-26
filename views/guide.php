@@ -66,6 +66,7 @@ if (isset($_POST['logout'])) {
 
     <div class="main-container">
         <header>
+            <div></div>
             <div class="auth" id="auth">
                 <?php
                 if (isAuthenticated()) {
