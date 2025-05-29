@@ -81,16 +81,6 @@ CREATE TABLE collection_articles (
     INDEX (article_id)
 );
 
-CREATE TABLE collection_articles (
-    collection_id INT(11) NOT NULL,
-    article_id INT(11) NOT NULL,
-    added_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (collection_id, article_id),
-    FOREIGN KEY (collection_id) REFERENCES collections(id),
-    FOREIGN KEY (article_id) REFERENCES articles(id),
-    INDEX (article_id)
-);
-
 CREATE TABLE posts (
     id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id INT(11) NOT NULL,
